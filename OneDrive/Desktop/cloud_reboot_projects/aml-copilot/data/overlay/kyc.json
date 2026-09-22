@@ -1,0 +1,90 @@
+[
+  {
+    "sourceId": "kyc:overlay:8075AC7C0:v1",
+    "accountId": "8075AC7C0",
+    "accountHolderName": "Alex Chen",
+    "occupation": "Retail shop manager",
+    "businessType": "Individual",
+    "statedExpectedMonthlyVolume": 528369155.4,
+    "riskRating": "high",
+    "lastReviewDate": "2024-03-15",
+    "jurisdiction": "US"
+  },
+  {
+    "sourceId": "kyc:overlay:811B6E170:v1",
+    "accountId": "811B6E170",
+    "accountHolderName": "Jordan Novak",
+    "occupation": "Restaurant owner",
+    "businessType": "Sole proprietorship",
+    "statedExpectedMonthlyVolume": 557546.31,
+    "riskRating": "high",
+    "lastReviewDate": "2024-03-15",
+    "jurisdiction": "US"
+  },
+  {
+    "sourceId": "kyc:overlay:802E2AD70:v1",
+    "accountId": "802E2AD70",
+    "accountHolderName": "Jordan Novak",
+    "occupation": null,
+    "businessType": null,
+    "statedExpectedMonthlyVolume": null,
+    "riskRating": "high",
+    "lastReviewDate": null,
+    "jurisdiction": "US"
+  },
+  {
+    "sourceId": "kyc:overlay:80154AAF0:v1",
+    "accountId": "80154AAF0",
+    "accountHolderName": "Alex Chen",
+    "occupation": "Independent contractor",
+    "businessType": "Individual",
+    "statedExpectedMonthlyVolume": 27800801.16,
+    "riskRating": "high",
+    "lastReviewDate": "2024-03-15",
+    "jurisdiction": "US"
+  },
+  {
+    "sourceId": "kyc:overlay:809862880:v1",
+    "accountId": "809862880",
+    "accountHolderName": "Jordan Novak",
+    "occupation": "Freelance graphic designer",
+    "businessType": "Sole proprietorship",
+    "statedExpectedMonthlyVolume": 1108211.94,
+    "riskRating": "low",
+    "lastReviewDate": "2024-03-15",
+    "jurisdiction": "US"
+  },
+  {
+    "sourceId": "kyc:overlay:800393E30:v1",
+    "accountId": "800393E30",
+    "accountHolderName": "Jordan Chen",
+    "occupation": "Freelance graphic designer",
+    "businessType": "Sole proprietorship",
+    "statedExpectedMonthlyVolume": 21969447.79,
+    "riskRating": "medium",
+    "lastReviewDate": "2024-03-15",
+    "jurisdiction": "US"
+  },
+  {
+    "sourceId": "kyc:overlay:8075DA9D0:v1",
+    "accountId": "8075DA9D0",
+    "accountHolderName": "COMERCIALIZADORA DE CAFE DEL OCCIDENTE CODECAFE LTDA.",
+    "occupation": "Import/export consultant",
+    "businessType": "Sole proprietorship",
+    "statedExpectedMonthlyVolume": 2381811.8,
+    "riskRating": "high",
+    "lastReviewDate": "2024-03-15",
+    "jurisdiction": "US"
+  },
+  {
+    "sourceId": "kyc:overlay:800042A10:v1",
+    "accountId": "800042A10",
+    "accountHolderName": "Jordan Okafor",
+    "occupation": "Independent contractor",
+    "businessType": "LLC",
+    "statedExpectedMonthlyVolume": 832416.3,
+    "riskRating": "low",
+    "lastReviewDate": "2024-03-15",
+    "jurisdiction": "US"
+  }
+]

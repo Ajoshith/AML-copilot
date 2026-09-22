@@ -1,0 +1,90 @@
+[
+  {
+    "sourceId": "alert:overlay:8075AC7C0:v1",
+    "alertId": "A-1001",
+    "accountId": "8075AC7C0",
+    "ruleId": "near-threshold-cash-cluster",
+    "ruleVersion": "v3",
+    "firedAt": "2026-09-11T12:54:17.413Z",
+    "jurisdiction": "US",
+    "dueDate": "2026-10-11T12:54:17.413Z",
+    "sarConfidentialitySensitive": true
+  },
+  {
+    "sourceId": "alert:overlay:811B6E170:v1",
+    "alertId": "A-1002",
+    "accountId": "811B6E170",
+    "ruleId": "high-velocity-fanout",
+    "ruleVersion": "v2",
+    "firedAt": "2026-09-11T12:54:19.797Z",
+    "jurisdiction": "US",
+    "dueDate": "2026-10-11T12:54:19.797Z",
+    "sarConfidentialitySensitive": true
+  },
+  {
+    "sourceId": "alert:overlay:802E2AD70:v1",
+    "alertId": "A-1003",
+    "accountId": "802E2AD70",
+    "ruleId": "near-threshold-cash-cluster",
+    "ruleVersion": "v3",
+    "firedAt": "2026-09-11T12:54:22.272Z",
+    "jurisdiction": "US",
+    "dueDate": "2026-10-11T12:54:22.272Z",
+    "sarConfidentialitySensitive": true
+  },
+  {
+    "sourceId": "alert:overlay:80154AAF0:v1",
+    "alertId": "A-1004",
+    "accountId": "80154AAF0",
+    "ruleId": "cross-currency-layering",
+    "ruleVersion": "v1",
+    "firedAt": "2026-09-11T12:54:24.952Z",
+    "jurisdiction": "US",
+    "dueDate": "2026-10-11T12:54:24.952Z",
+    "sarConfidentialitySensitive": true
+  },
+  {
+    "sourceId": "alert:overlay:809862880:v1",
+    "alertId": "A-1005",
+    "accountId": "809862880",
+    "ruleId": "periodic-review",
+    "ruleVersion": "v1",
+    "firedAt": "2026-09-11T12:54:27.267Z",
+    "jurisdiction": "US",
+    "dueDate": "2026-10-11T12:54:27.267Z",
+    "sarConfidentialitySensitive": true
+  },
+  {
+    "sourceId": "alert:overlay:800393E30:v1",
+    "alertId": "A-1006",
+    "accountId": "800393E30",
+    "ruleId": "near-threshold-cash-cluster",
+    "ruleVersion": "v3",
+    "firedAt": "2026-09-11T12:54:29.743Z",
+    "jurisdiction": "US",
+    "dueDate": "2026-10-11T12:54:29.743Z",
+    "sarConfidentialitySensitive": true
+  },
+  {
+    "sourceId": "alert:overlay:8075DA9D0:v1",
+    "alertId": "A-1007",
+    "accountId": "8075DA9D0",
+    "ruleId": "sanctions-name-screen",
+    "ruleVersion": "v4",
+    "firedAt": "2026-09-11T12:54:31.912Z",
+    "jurisdiction": "US",
+    "dueDate": "2026-10-11T12:54:31.912Z",
+    "sarConfidentialitySensitive": true
+  },
+  {
+    "sourceId": "alert:overlay:800042A10:v1",
+    "alertId": "A-1008",
+    "accountId": "800042A10",
+    "ruleId": "periodic-review",
+    "ruleVersion": "v1",
+    "firedAt": "2026-09-11T12:54:34.246Z",
+    "jurisdiction": "US",
+    "dueDate": "2026-10-11T12:54:34.246Z",
+    "sarConfidentialitySensitive": true
+  }
+]

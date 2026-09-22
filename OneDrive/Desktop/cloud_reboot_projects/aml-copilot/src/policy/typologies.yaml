@@ -1,0 +1,544 @@
+policyVersion: 2026.09.0
+source: FFIEC BSA/AML Manual Appendix F
+sourceUrl: https://bsaaml.ffiec.gov/manual/Appendices/07
+fetchedAt: 2026-09-10T11:34:43.324Z
+sections:
+  - category: Potentially Suspicious Activity That May Indicate Money Laundering
+    section: Customers Who Provide Insufficient or Suspicious Information
+    slug: customers-who-provide-insufficient-or-suspicious-information
+    clauses:
+      - id: ffiec-appF:customers-who-provide-insufficient-or-suspicious-information:1
+        text: A customer uses unusual or suspicious identification documents that cannot
+          be readily verified.
+      - id: ffiec-appF:customers-who-provide-insufficient-or-suspicious-information:2
+        text: A customer provides an individual taxpayer identification number after
+          having previously used a Social Security number.
+      - id: ffiec-appF:customers-who-provide-insufficient-or-suspicious-information:3
+        text: A customer uses different taxpayer identification numbers with variations
+          of his or her name.
+      - id: ffiec-appF:customers-who-provide-insufficient-or-suspicious-information:4
+        text: A business is reluctant, when establishing a new account, to provide
+          complete information about the nature and purpose of its business,
+          anticipated account activity, prior banking relationships, the names
+          of its officers and directors, or information on its business
+          location.
+      - id: ffiec-appF:customers-who-provide-insufficient-or-suspicious-information:5
+        text: A customer’s home or business telephone is disconnected.
+      - id: ffiec-appF:customers-who-provide-insufficient-or-suspicious-information:6
+        text: The customer’s background differs from that which would be expected on the
+          basis of his or her business activities.
+      - id: ffiec-appF:customers-who-provide-insufficient-or-suspicious-information:7
+        text: A customer makes frequent or large transactions and has no record of past
+          or present employment experience.
+      - id: ffiec-appF:customers-who-provide-insufficient-or-suspicious-information:8
+        text: A customer is a trust, shell company, or Private Investment Company that
+          is reluctant to provide information on controlling parties and
+          underlying beneficiaries. Beneficial owners may hire nominee
+          incorporation services to establish shell companies and open bank
+          accounts for those shell companies while shielding the owner’s
+          identity.
+  - category: Potentially Suspicious Activity That May Indicate Money Laundering
+    section: Efforts to Avoid Reporting or Recordkeeping Requirement
+    slug: efforts-to-avoid-reporting-or-recordkeeping-requirement
+    clauses:
+      - id: ffiec-appF:efforts-to-avoid-reporting-or-recordkeeping-requirement:1
+        text: A customer or group tries to persuade a bank employee not to file required
+          reports or maintain required records.
+      - id: ffiec-appF:efforts-to-avoid-reporting-or-recordkeeping-requirement:2
+        text: A customer is reluctant to provide information needed to file a mandatory
+          report, to have the report filed, or to proceed with a transaction
+          after being informed that the report must be filed.
+      - id: ffiec-appF:efforts-to-avoid-reporting-or-recordkeeping-requirement:3
+        text: A customer is reluctant to furnish identification when purchasing
+          negotiable instruments in recordable amounts.
+      - id: ffiec-appF:efforts-to-avoid-reporting-or-recordkeeping-requirement:4
+        text: A business or customer asks to be exempted from reporting or recordkeeping
+          requirements.
+      - id: ffiec-appF:efforts-to-avoid-reporting-or-recordkeeping-requirement:5
+        text: A person customarily uses the automated teller machine to make several
+          bank deposits below a specified threshold.
+      - id: ffiec-appF:efforts-to-avoid-reporting-or-recordkeeping-requirement:6
+        text: A customer deposits funds into several accounts, usually in amounts of
+          less than $3,000, which are subsequently consolidated into a master
+          account and transferred outside of the country, particularly to or
+          through a location of specific concern (e.g., countries designated by
+          national authorities and Financial Action Task Force on Money
+          Laundering (FATF) as noncooperative countries and territories).
+      - id: ffiec-appF:efforts-to-avoid-reporting-or-recordkeeping-requirement:7
+        text: A customer accesses a safe deposit box after completing a transaction
+          involving a large withdrawal of currency, or accesses a safe deposit
+          box before making currency deposits structured at or just under
+          $10,000, to evade CTR filing requirements.
+  - category: Potentially Suspicious Activity That May Indicate Money Laundering
+    section: Funds Transfers
+    slug: funds-transfers
+    clauses:
+      - id: ffiec-appF:funds-transfers:1
+        text: Many funds transfers are sent in large, round dollar, hundred dollar, or
+          thousand dollar amounts.
+      - id: ffiec-appF:funds-transfers:2
+        text: Funds transfer activity occurs to or from a financial secrecy haven, or to
+          or from a higher-risk geographic location without an apparent business
+          reason or when the activity is inconsistent with the customer’s
+          business or history.
+      - id: ffiec-appF:funds-transfers:3
+        text: Funds transfer activity occurs to or from a financial institution located
+          in a higher risk jurisdiction distant from the customer's operations.
+      - id: ffiec-appF:funds-transfers:4
+        text: Many small, incoming transfers of funds are received, or deposits are made
+          using checks and money orders. Almost immediately, all or most of the
+          transfers or deposits are wired to another city or country in a manner
+          inconsistent with the customer’s business or history.
+      - id: ffiec-appF:funds-transfers:5
+        text: Large, incoming funds transfers are received on behalf of a foreign
+          client, with little or no explicit reason.
+      - id: ffiec-appF:funds-transfers:6
+        text: Funds transfer activity is unexplained, repetitive, or shows unusual
+          patterns.
+      - id: ffiec-appF:funds-transfers:7
+        text: Payments or receipts with no apparent links to legitimate contracts,
+          goods, or services are received.
+      - id: ffiec-appF:funds-transfers:8
+        text: Funds transfers are sent or received from the same person to or from
+          different accounts.
+      - id: ffiec-appF:funds-transfers:9
+        text: Funds transfers contain limited content and lack related party
+          information.
+  - category: Potentially Suspicious Activity That May Indicate Money Laundering
+    section: Automated Clearing House Transactions
+    slug: automated-clearing-house-transactions
+    clauses:
+      - id: ffiec-appF:automated-clearing-house-transactions:1
+        text: Large-value, automated clearing house (ACH) transactions are frequently
+          initiated through third-party service providers (TPSP) by originators
+          that are not bank customers and for which the bank has no or
+          insufficient due diligence.
+      - id: ffiec-appF:automated-clearing-house-transactions:2
+        text: TPSPs have a history of violating ACH network rules or generating illegal
+          transactions, or processing manipulated or fraudulent transactions on
+          behalf of their customers.
+      - id: ffiec-appF:automated-clearing-house-transactions:3
+        text: Multiple layers of TPSPs that appear to be unnecessarily involved in
+          transactions.
+      - id: ffiec-appF:automated-clearing-house-transactions:4
+        text: Unusually high level of transactions initiated over the Internet or by
+          telephone.
+      - id: ffiec-appF:automated-clearing-house-transactions:5
+        text: NACHA — The Electronic Payments Association (NACHA) information requests
+          indicate potential concerns with the bank's usage of the ACH system.
+  - category: Potentially Suspicious Activity That May Indicate Money Laundering
+    section: Activity Inconsistent with the Customer’s Business
+    slug: activity-inconsistent-with-the-customer-s-business
+    clauses:
+      - id: ffiec-appF:activity-inconsistent-with-the-customer-s-business:1
+        text: The currency transaction patterns of a business show a sudden change
+          inconsistent with normal activities.
+      - id: ffiec-appF:activity-inconsistent-with-the-customer-s-business:2
+        text: A large volume of cashier’s checks, money orders, or funds transfers is
+          deposited into, or purchased through, an account when the nature of
+          the accountholder’s business would not appear to justify such
+          activity.
+      - id: ffiec-appF:activity-inconsistent-with-the-customer-s-business:3
+        text: A retail business has dramatically different patterns of currency deposits
+          from similar businesses in the same general location.
+      - id: ffiec-appF:activity-inconsistent-with-the-customer-s-business:4
+        text: Unusual transfers of funds occur among related accounts or among accounts
+          that involve the same or related principals.
+      - id: ffiec-appF:activity-inconsistent-with-the-customer-s-business:5
+        text: The owner of both a retail business and a check-cashing service does not
+          ask for currency when depositing checks, possibly indicating the
+          availability of another source of currency.
+      - id: ffiec-appF:activity-inconsistent-with-the-customer-s-business:6
+        text: Goods or services purchased by the business do not match the customer’s
+          stated line of business.
+      - id: ffiec-appF:activity-inconsistent-with-the-customer-s-business:7
+        text: Payments for goods or services are made by checks, money orders, or bank
+          drafts not drawn from the account of the entity that made the
+          purchase.
+  - category: Potentially Suspicious Activity That May Indicate Money Laundering
+    section: Lending Activity
+    slug: lending-activity
+    clauses:
+      - id: ffiec-appF:lending-activity:1
+        text: Loans secured by pledged assets held by third parties unrelated to the
+          borrower.
+      - id: ffiec-appF:lending-activity:2
+        text: Loan secured by deposits or other readily marketable assets, such as
+          securities, particularly when owned by apparently unrelated third
+          parties.
+      - id: ffiec-appF:lending-activity:3
+        text: Borrower defaults on a cash-secured loan or any loan that is secured by
+          assets which are readily convertible into currency.
+      - id: ffiec-appF:lending-activity:4
+        text: Loans are made for, or are paid on behalf of, a third party with no
+          reasonable explanation.
+      - id: ffiec-appF:lending-activity:5
+        text: To secure a loan, the customer purchases a certificate of deposit using an
+          unknown source of funds, particularly when funds are provided via
+          currency or multiple monetary instruments.
+      - id: ffiec-appF:lending-activity:6
+        text: Loans that lack a legitimate business purpose, provide the bank with
+          significant fees for assuming little or no risk, or tend to obscure
+          the movement of funds (e.g., loans made to a borrower and immediately
+          sold to an entity related to the borrower).
+  - category: Potentially Suspicious Activity That May Indicate Money Laundering
+    section: Changes in Bank-to-Bank Transactions
+    slug: changes-in-bank-to-bank-transactions
+    clauses:
+      - id: ffiec-appF:changes-in-bank-to-bank-transactions:1
+        text: The size and frequency of currency deposits increases rapidly with no
+          corresponding increase in noncurrency deposits.
+      - id: ffiec-appF:changes-in-bank-to-bank-transactions:2
+        text: A bank is unable to track the true accountholder of correspondent or
+          concentration account transactions.
+      - id: ffiec-appF:changes-in-bank-to-bank-transactions:3
+        text: The turnover in large-denomination bills is significant and appears
+          uncharacteristic, given the bank’s location.
+      - id: ffiec-appF:changes-in-bank-to-bank-transactions:4
+        text: Changes in currency-shipment patterns between correspondent banks are
+          significant.
+  - category: Potentially Suspicious Activity That May Indicate Money Laundering
+    section: Cross-Border Financial Institution Transactions
+    slug: cross-border-financial-institution-transactions
+    clauses:
+      - id: ffiec-appF:cross-border-financial-institution-transactions:1
+        text: U.S. bank increases sales or exchanges of large denomination U.S. bank
+          notes to Mexican financial institution(s).
+      - id: ffiec-appF:cross-border-financial-institution-transactions:2
+        text: Large volumes of small denomination U.S. banknotes being sent from Mexican
+          casas de cambio to their U.S. accounts via armored transport or sold
+          directly to U.S. banks. These sales or exchanges may involve
+          jurisdictions outside of Mexico.
+      - id: ffiec-appF:cross-border-financial-institution-transactions:3
+        text: Casas de cambio direct the remittance of funds via multiple funds
+          transfers to jurisdictions outside of Mexico that bear no apparent
+          business relationship with the casas de cambio. Funds transfer
+          recipients may include individuals, businesses, and other entities in
+          free trade zones.
+      - id: ffiec-appF:cross-border-financial-institution-transactions:4
+        text: Casas de cambio deposit numerous third-party items, including sequentially
+          numbered monetary instruments, to their accounts at U.S. banks.
+      - id: ffiec-appF:cross-border-financial-institution-transactions:5
+        text: Casas de cambio direct the remittance of funds transfers from their
+          accounts at Mexican financial institutions to accounts at U.S. banks.
+          These funds transfers follow the deposit of currency and third-party
+          items by the casas de cambio into their Mexican financial institution.
+  - category: Potentially Suspicious Activity That May Indicate Money Laundering
+    section: Bulk Currency Shipments
+    slug: bulk-currency-shipments
+    clauses:
+      - id: ffiec-appF:bulk-currency-shipments:1
+        text: An increase in the sale of large denomination U.S. bank notes to foreign
+          financial institutions by U.S. banks.
+      - id: ffiec-appF:bulk-currency-shipments:2
+        text: Large volumes of small denomination U.S. bank notes being sent from
+          foreign nonbank financial institutions to their accounts in the United
+          States via armored transport, or sold directly to U.S. banks.
+      - id: ffiec-appF:bulk-currency-shipments:3
+        text: Multiple wire transfers initiated by foreign nonbank financial
+          institutions that direct U.S. banks to remit funds to other
+          jurisdictions that bear no apparent business relationship with that
+          foreign nonbank financial institution. Recipients may include
+          individuals, businesses, and other entities in free trade zones and
+          other locations.
+      - id: ffiec-appF:bulk-currency-shipments:4
+        text: The exchange of small denomination U.S. bank notes for large denomination
+          U.S. bank notes that may be sent to foreign countries.
+      - id: ffiec-appF:bulk-currency-shipments:5
+        text: Deposits by foreign nonbank financial institutions to their accounts at
+          U.S. banks that include third-party items, including sequentially
+          numbered monetary instruments.
+      - id: ffiec-appF:bulk-currency-shipments:6
+        text: Deposits of currency and third-party items by foreign nonbank financial
+          institutions to their accounts at foreign financial institutions and
+          thereafter direct wire transfers to the foreign nonbank financial
+          institution's accounts at U.S. banks.
+  - category: Potentially Suspicious Activity That May Indicate Money Laundering
+    section: Trade Finance
+    slug: trade-finance
+    clauses:
+      - id: ffiec-appF:trade-finance:1
+        text: Items shipped that are inconsistent with the nature of the customer’s
+          business (e.g., a steel company that starts dealing in paper products,
+          or an information technology company that starts dealing in bulk
+          pharmaceuticals).
+      - id: ffiec-appF:trade-finance:2
+        text: Customers conducting business in higher-risk jurisdictions.
+      - id: ffiec-appF:trade-finance:3
+        text: Customers shipping items through higher-risk jurisdictions, including
+          transit through noncooperative countries.
+      - id: ffiec-appF:trade-finance:4
+        text: Customers involved in potentially higher-risk activities, including
+          activities that may be subject to export/import restrictions (e.g.,
+          equipment for military or police organizations of foreign governments,
+          weapons, ammunition, chemical mixtures, classified defense articles,
+          sensitive technical data, nuclear materials, precious gems, or certain
+          natural resources such as metals, ore, and crude oil).
+      - id: ffiec-appF:trade-finance:5
+        text: Obvious over- or under-pricing of goods and services.
+      - id: ffiec-appF:trade-finance:6
+        text: Obvious misrepresentation of quantity or type of goods imported or
+          exported.
+      - id: ffiec-appF:trade-finance:7
+        text: Transaction structure appears unnecessarily complex and designed to
+          obscure the true nature of the transaction.
+      - id: ffiec-appF:trade-finance:8
+        text: Customer requests payment of proceeds to an unrelated third party.
+      - id: ffiec-appF:trade-finance:9
+        text: Shipment locations or description of goods not consistent with letter of
+          credit.
+      - id: ffiec-appF:trade-finance:10
+        text: Significantly amended letters of credit without reasonable justification
+          or changes to the beneficiary or location of payment. Any changes in
+          the names of parties should prompt additional OFAC review.
+  - category: Potentially Suspicious Activity That May Indicate Money Laundering
+    section: Privately Owned Automated Teller Machines
+    slug: privately-owned-automated-teller-machines
+    clauses:
+      - id: ffiec-appF:privately-owned-automated-teller-machines:1
+        text: Automated teller machine (ATM) activity levels are high in comparison with
+          other privately owned or bank-owned ATMs in comparable geographic and
+          demographic locations.
+      - id: ffiec-appF:privately-owned-automated-teller-machines:2
+        text: Sources of currency for the ATM cannot be identified or confirmed through
+          withdrawals from account, armored car contracts, lending arrangements,
+          or other appropriate documentation.
+  - category: Potentially Suspicious Activity That May Indicate Money Laundering
+    section: Insurance
+    slug: insurance
+    clauses:
+      - id: ffiec-appF:insurance:1
+        text: A customer purchases products with termination features without concern
+          for the product’s investment performance.
+      - id: ffiec-appF:insurance:2
+        text: A customer purchases insurance products using a single, large premium
+          payment, particularly when payment is made through unusual methods
+          such as currency or currency equivalents.
+      - id: ffiec-appF:insurance:3
+        text: A customer purchases a product that appears outside the customer’s normal
+          range of financial wealth or estate planning needs.
+      - id: ffiec-appF:insurance:4
+        text: A customer borrows against the cash surrender value of permanent life
+          insurance policies, particularly when payments are made to apparently
+          unrelated third parties.
+      - id: ffiec-appF:insurance:5
+        text: Policies are purchased that allow for the transfer of beneficial ownership
+          interests without the knowledge and consent of the insurance issuer.
+          This would include secondhand endowment and bearer insurance policies.
+      - id: ffiec-appF:insurance:6
+        text: A customer is known to purchase several insurance products and uses the
+          proceeds from an early policy surrender to purchase other financial
+          assets.
+      - id: ffiec-appF:insurance:7
+        text: A customer uses multiple currency equivalents (e.g., cashier's checks and
+          money orders) from different banks and money services businesses to
+          make insurance policy or annuity payments.
+  - category: Potentially Suspicious Activity That May Indicate Money Laundering
+    section: Shell Company Activity
+    slug: shell-company-activity
+    clauses:
+      - id: ffiec-appF:shell-company-activity:1
+        text: A bank is unable to obtain sufficient information or information is
+          unavailable to positively identify originators or beneficiaries of
+          accounts or other banking activity (using Internet, commercial
+          database searches, or direct inquiries to a respondent bank).
+      - id: ffiec-appF:shell-company-activity:2
+        text: Payments to or from the company have no stated purpose, do not reference
+          goods or services, or identify only a contract or invoice number.
+      - id: ffiec-appF:shell-company-activity:3
+        text: Goods or services, if identified, do not match profile of company provided
+          by respondent bank or character of the financial activity; a company
+          references remarkably dissimilar goods and services in related funds
+          transfers; explanation given by foreign respondent bank is
+          inconsistent with observed funds transfer activity.
+      - id: ffiec-appF:shell-company-activity:4
+        text: Transacting businesses share the same address, provide only a registered
+          agent’s address, or have other address inconsistencies.
+      - id: ffiec-appF:shell-company-activity:5
+        text: Unusually large number and variety of beneficiaries are receiving funds
+          transfers from one company.
+      - id: ffiec-appF:shell-company-activity:6
+        text: Frequent involvement of multiple jurisdictions or beneficiaries located in
+          higher-risk offshore financial centers.
+      - id: ffiec-appF:shell-company-activity:7
+        text: A foreign correspondent bank exceeds the expected volume in its client
+          profile for funds transfers, or an individual company exhibits a high
+          volume and pattern of funds transfers that is inconsistent with its
+          normal business activity.
+      - id: ffiec-appF:shell-company-activity:8
+        text: Multiple high-value payments or transfers between shell companies with no
+          apparent legitimate business purpose.
+      - id: ffiec-appF:shell-company-activity:9
+        text: Purpose of the shell company is unknown or unclear.
+  - category: Potentially Suspicious Activity That May Indicate Money Laundering
+    section: Embassy, Foreign Consulate, and Foreign Mission Accounts
+    slug: embassy-foreign-consulate-and-foreign-mission-accounts
+    clauses:
+      - id: ffiec-appF:embassy-foreign-consulate-and-foreign-mission-accounts:1
+        text: Official embassy business is conducted through personal accounts.
+      - id: ffiec-appF:embassy-foreign-consulate-and-foreign-mission-accounts:2
+        text: Account activity is not consistent with the purpose of the account, such
+          as pouch activity or payable upon proper identification transactions.
+      - id: ffiec-appF:embassy-foreign-consulate-and-foreign-mission-accounts:3
+        text: Accounts are funded through substantial currency transactions.
+      - id: ffiec-appF:embassy-foreign-consulate-and-foreign-mission-accounts:4
+        text: Accounts directly fund personal expenses of foreign nationals without
+          appropriate controls, including, but not limited to, expenses for
+          college students.
+  - category: Potentially Suspicious Activity That May Indicate Money Laundering
+    section: Employees
+    slug: employees
+    clauses:
+      - id: ffiec-appF:employees:1
+        text: Employee exhibits a lavish lifestyle that cannot be supported by his or
+          her salary.
+      - id: ffiec-appF:employees:2
+        text: Employee fails to conform to recognized policies, procedures, and
+          processes, particularly in private banking.
+      - id: ffiec-appF:employees:3
+        text: Employee is reluctant to take a vacation.
+      - id: ffiec-appF:employees:4
+        text: Employee overrides a hold placed on an account identified as suspicious so
+          that transactions can occur in the account.
+  - category: Potentially Suspicious Activity That May Indicate Money Laundering
+    section: Other Unusual or Suspicious Customer Activity
+    slug: other-unusual-or-suspicious-customer-activity
+    clauses:
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:1
+        text: Customer frequently exchanges small-dollar denominations for large-dollar
+          denominations.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:2
+        text: Customer frequently deposits currency wrapped in currency straps or
+          currency wrapped in rubber bands that is disorganized and does not
+          balance when counted.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:3
+        text: Customer purchases a number of cashier’s checks, money orders, or
+          traveler’s checks for large amounts under a specified threshold.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:4
+        text: Customer purchases a number of open-end prepaid cards for large amounts.
+          Purchases of prepaid cards are not commensurate with normal business
+          activities.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:5
+        text: Customer receives large and frequent deposits from online payments systems
+          yet has no apparent online or auction business.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:6
+        text: Monetary instruments deposited by mail are numbered sequentially or have
+          unusual symbols or stamps on them.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:7
+        text: Suspicious movements of funds occur from one bank to another, and then
+          funds are moved back to the first bank.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:8
+        text: Deposits are structured through multiple branches of the same bank or by
+          groups of people who enter a single branch at the same time.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:9
+        text: Currency is deposited or withdrawn in amounts just below identification or
+          reporting thresholds.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:10
+        text: Customer visits a safe deposit box or uses a safe custody account on an
+          unusually frequent basis.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:11
+        text: Safe deposit boxes or safe custody accounts opened by individuals who do
+          not reside or work in the institution’s service area, despite the
+          availability of such services at an institution closer to them.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:12
+        text: Customer repeatedly uses a bank or branch location that is geographically
+          distant from the customer's home or office without sufficient business
+          purpose.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:13
+        text: Customer exhibits unusual traffic patterns in the safe deposit box area or
+          unusual use of safe custody accounts. For example, several individuals
+          arrive together, enter frequently, or carry bags or other containers
+          that could conceal large amounts of currency, monetary instruments, or
+          small valuable items.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:14
+        text: Customer rents multiple safe deposit boxes to store large amounts of
+          currency, monetary instruments, or high-value assets awaiting
+          conversion to currency, for placement into the banking system.
+          Similarly, a customer establishes multiple safe custody accounts to
+          park large amounts of securities awaiting sale and conversion into
+          currency, monetary instruments, outgoing funds transfers, or a
+          combination thereof, for placement into the banking system.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:15
+        text: Unusual use of trust funds in business transactions or other financial
+          activity.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:16
+        text: Customer uses a personal account for business purposes.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:17
+        text: Customer has established multiple accounts in various corporate or
+          individual names that lack sufficient business purpose for the account
+          complexities or appear to be an effort to hide the beneficial
+          ownership from the bank.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:18
+        text: Customer makes multiple and frequent currency deposits to various accounts
+          that are purportedly unrelated.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:19
+        text: Customer conducts large deposits and withdrawals during a short time
+          period after opening and then subsequently closes the account or the
+          account becomes dormant. Conversely, an account with little activity
+          may suddenly experience large deposit and withdrawal activity.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:20
+        text: Customer makes high-value transactions not commensurate with the
+          customer's known incomes.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:21
+        text: Funds are generated by a business owned by persons of the same origin or
+          by a business that involves persons of the same origin from
+          higher-risk countries (e.g., countries designated by national
+          authorities and FATF as noncooperative countries and territories).
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:22
+        text: The stated occupation of the customer is not commensurate with the type or
+          level of activity.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:23
+        text: Persons involved in currency transactions share an address or phone
+          number, particularly when the address is also a business location or
+          does not seem to correspond to the stated occupation (e.g., student,
+          unemployed, or self-employed).
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:24
+        text: Regarding nonprofit or charitable organizations, financial transactions
+          occur for which there appears to be no logical economic purpose or in
+          which there appears to be no link between the stated activity of the
+          organization and the other parties in the transaction.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:25
+        text: A safe deposit box opened on behalf of a commercial entity when the
+          business activity of the customer is unknown or such activity does not
+          appear to justify the use of a safe deposit box.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:26
+        text: A large number of incoming or outgoing funds transfers take place through
+          a business account, and there appears to be no logical business or
+          other economic purpose for the transfers, particularly when this
+          activity involves higher-risk locations.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:27
+        text: Funds transfers are ordered in small amounts in an apparent effort to
+          avoid triggering identification or reporting requirements.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:28
+        text: Funds transfers do not include information on the originator, or the
+          person on whose behalf the transaction is conducted, when the
+          inclusion of such information would be expected.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:29
+        text: Multiple personal and business accounts or the accounts of nonprofit
+          organizations or charities are used to collect and funnel funds to a
+          small number of foreign beneficiaries.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:30
+        text: Foreign exchange transactions are performed on behalf of a customer by a
+          third party, followed by funds transfers to locations having no
+          apparent business connection with the customer or to higher-risk
+          countries.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:31
+        text: Transactions involving foreign currency exchanges are followed within a
+          short time by funds transfers to higher-risk locations.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:32
+        text: Multiple accounts are used to collect and funnel funds to a small number
+          of foreign beneficiaries, both persons and businesses, particularly in
+          higher-risk locations.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:33
+        text: A customer obtains a credit instrument or engages in commercial financial
+          transactions involving the movement of funds to or from higher-risk
+          locations when there appear to be no logical business reasons for
+          dealing with those locations.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:34
+        text: Banks from higher-risk locations open accounts.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:35
+        text: Funds are sent or received via international transfers from or to
+          higher-risk locations.
+      - id: ffiec-appF:other-unusual-or-suspicious-customer-activity:36
+        text: Insurance policy loans or policy surrender values that are subject to a
+          substantial surrender charge.

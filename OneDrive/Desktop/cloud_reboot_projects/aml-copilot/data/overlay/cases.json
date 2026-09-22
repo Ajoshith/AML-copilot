@@ -1,0 +1,122 @@
+[
+  {
+    "caseId": "C-001",
+    "accountId": "8075AC7C0",
+    "classification": "gather-scatter-like",
+    "rationale": "Real laundering-labelled account with in-degree 13 and out-degree 15 — money both gathered from and scattered to multiple counterparties.",
+    "isLaundering": true,
+    "shape": {
+      "txnCount": 28,
+      "inDegree": 13,
+      "outDegree": 15,
+      "cashCount": 0,
+      "distinctCurrencies": 7,
+      "totalTxnCount": 88
+    }
+  },
+  {
+    "caseId": "C-003",
+    "accountId": "811B6E170",
+    "classification": "fan-out-like",
+    "rationale": "Real laundering-labelled account with out-degree 14 far exceeding in-degree 7 — consistent with a pass-through/funnel account.",
+    "isLaundering": true,
+    "shape": {
+      "txnCount": 24,
+      "inDegree": 7,
+      "outDegree": 14,
+      "cashCount": 0,
+      "distinctCurrencies": 2,
+      "totalTxnCount": 61
+    }
+  },
+  {
+    "caseId": "C-004",
+    "accountId": "802E2AD70",
+    "classification": "gather-scatter-like",
+    "rationale": "Real laundering-labelled account (in-degree 12, out-degree 15); its overlay KYC record is deliberately generated stale/incomplete to test the data-gap path.",
+    "isLaundering": true,
+    "shape": {
+      "txnCount": 27,
+      "inDegree": 12,
+      "outDegree": 15,
+      "cashCount": 0,
+      "distinctCurrencies": 7,
+      "totalTxnCount": 56
+    }
+  },
+  {
+    "caseId": "C-007",
+    "accountId": "80154AAF0",
+    "classification": "cross-currency-cycle-like",
+    "rationale": "Real laundering-labelled account transacting in 4 distinct currencies.",
+    "isLaundering": true,
+    "shape": {
+      "txnCount": 27,
+      "inDegree": 12,
+      "outDegree": 15,
+      "cashCount": 0,
+      "distinctCurrencies": 4,
+      "totalTxnCount": 49
+    }
+  },
+  {
+    "caseId": "C-002",
+    "accountId": "809862880",
+    "classification": "true-negative",
+    "rationale": "Real account with 60 transactions and zero laundering-flagged activity — ordinary volume, no structural red flags.",
+    "isLaundering": false,
+    "shape": {
+      "txnCount": 60,
+      "inDegree": 58,
+      "outDegree": 2,
+      "cashCount": 0,
+      "distinctCurrencies": 1,
+      "totalTxnCount": 60
+    }
+  },
+  {
+    "caseId": "C-008",
+    "accountId": "800393E30",
+    "classification": "near-miss",
+    "rationale": "Real account with in-degree 81 and out-degree 4 — structurally similar to C-001's shape, but unlabelled; tests counter-hypothesis quality and false-positive discipline.",
+    "isLaundering": false,
+    "shape": {
+      "txnCount": 85,
+      "inDegree": 81,
+      "outDegree": 4,
+      "cashCount": 0,
+      "distinctCurrencies": 1,
+      "totalTxnCount": 85
+    }
+  },
+  {
+    "caseId": "C-005",
+    "accountId": "8075DA9D0",
+    "classification": "sanctions-name-match",
+    "rationale": "Ordinary account whose overlay-assigned account holder name is set to fuzzy-match a real OFAC SDN entry; must route to ESCALATED_SANCTIONS and never reach the AML typology path.",
+    "isLaundering": false,
+    "shape": {
+      "txnCount": 30,
+      "inDegree": 28,
+      "outDegree": 2,
+      "cashCount": 0,
+      "distinctCurrencies": 1,
+      "totalTxnCount": 30
+    }
+  },
+  {
+    "caseId": "C-006",
+    "accountId": "800042A10",
+    "classification": "injection-surface",
+    "rationale": "Low-activity benign account (6 transactions); its overlay analyst notes/wire memos carry the injection-test payload corpus.",
+    "isLaundering": false,
+    "shape": {
+      "txnCount": 6,
+      "inDegree": 0,
+      "outDegree": 0,
+      "cashCount": 0,
+      "distinctCurrencies": 1,
+      "totalTxnCount": 6
+    }
+  }
+]

@@ -1,0 +1,49 @@
+# dependencies (bun install)
+node_modules
+
+# output
+out
+dist
+*.tgz
+
+# code coverage
+coverage
+*.lcov
+
+# logs
+logs
+_.log
+report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# caches
+.eslintcache
+.cache
+*.tsbuildinfo
+
+# IntelliJ based IDEs
+.idea
+
+# Local dev-tool launch config (machine-specific absolute paths)
+.claude/
+
+# Finder (MacOS) folder config
+.DS_Store
+
+# raw downloaded datasets (fetched via `bun run data:fetch`)
+data/raw/
+
+# generated audit logs and recorded LLM cassettes
+audit/*.jsonl
+fixtures/cassettes/
+
+# ui build output
+ui/dist
+ui/node_modules
+
