@@ -261,7 +261,7 @@ export function CaseWorkbench(props: { summary: CaseSummary }) {
             <div class="case-header-actions">
               <span
                 class={`truth-tag ${props.summary.isLaundering ? "truth-pos" : "truth-neg"}`}
-                title="IBM AMLworld ground-truth label for this account — shown for evaluation, never given to the agents"
+                title="IBM AMLworld ground-truth label for this account — shown for evaluation"
               >
                 <Icon name="database" size={12} />
                 Ground truth: {props.summary.isLaundering ? "laundering" : "clean"}

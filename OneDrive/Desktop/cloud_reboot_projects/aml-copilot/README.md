@@ -15,6 +15,15 @@ code, not just in a design doc:
 
 Each is demonstrated below with the exact command that proves it.
 
+## Documentation
+
+Full documentation lives in [`docs/`](docs/README.md), organised by what you need:
+
+- **New here?** Start with the [getting-started tutorial](docs/tutorials/getting-started.md).
+- **Doing a task?** See the how-to guides: [run the demo](docs/how-to/run-the-demo.md), [record cassettes](docs/how-to/record-cassettes.md), [switch provider](docs/how-to/switch-llm-provider.md).
+- **Looking something up?** See the [API](docs/reference/api.md), [configuration](docs/reference/configuration.md) and [data model](docs/reference/data-model.md) references.
+- **Want the reasoning?** See the [architecture](docs/explanation/architecture.md), [control guarantees](docs/explanation/controls.md), [AI system card](docs/explanation/system-card.md) and [decision records](docs/decisions/README.md).
+
 ## Stack
 
 Bun + TypeScript throughout. Elysia (backend) + SolidJS/Vite (frontend, via Eden Treaty for
@@ -22,8 +31,8 @@ a fully-typed API client). DuckDB for all deterministic analytics — timeline, 
 graph structure, pattern detection, and OFAC sanctions matching are 100% SQL, with zero LLM
 involvement (enforced by a test that greps `src/analytics/` for any `llm/` import). An LLM is
 used only for the five narrow, bounded, single-shot sub-agents where the task is genuinely
-open-ended language/judgment work — see the "Why an LLM at all" table in the plan doc for the
-reasoning behind each one.
+open-ended language/judgment work — see [ADR 0002](docs/decisions/0002-code-computes-ai-explains.md) for the
+reasoning.
 
 ### Swapping the LLM provider
 
@@ -87,15 +96,22 @@ their KYC/alert/note overlay plus a committed Parquet slice (`data/slice/`) so t
 never needs the full 475 MB CSV. This repo already ships with these committed — only re-run
 if you want a different mined set.
 
+The app and evaluation replay recorded model output ("cassettes"), which are **not committed**
+(`fixtures/cassettes/` is gitignored). Either record real output (needs `ANTHROPIC_API_KEY`; see
+[how](docs/how-to/record-cassettes.md)):
+
+```bash
+AML_LLM_MODE=record bun run scripts/record-cases.ts
+```
+
+or seed hand-written placeholders to explore the app with no API key:
+
 ```bash
 bun run scripts/seed-demo-cassettes.ts
 ```
 
-Seeds one hand-written, clearly-labelled placeholder cassette set per case, so the full
-pipeline (API, UI, evaluate) can be exercised offline with zero API credit. **These are not
-real recorded model output** — see the warning at the top of `scripts/seed-demo-cassettes.ts`.
-Re-run with `AML_LLM_MODE=record` against the live API (`ANTHROPIC_API_KEY` in `.env`) to
-replace them with genuine recorded responses once credit is available.
+Placeholders are not real model output, and they use the same keys as recordings, so seeding
+**overwrites** any recorded cassettes. The test suite needs neither: each test seeds its own.
 
 ## Running it
 
@@ -108,7 +124,8 @@ cd ui && bun run dev
 ```
 
 Open the printed Vite URL. Select a case, click "Run investigation," review the packet, and
-record a disposition as the `analyst` role.
+record a disposition as the `analyst` role. For a scripted walkthrough see
+[run the demo](docs/how-to/run-the-demo.md).
 
 ## The five definition-of-done properties, demonstrated
 
@@ -210,11 +227,10 @@ AML_LLM_MODE=replay bun run scripts/evaluate.ts
 Runs the pipeline over all 8 mined cases and reports a confusion matrix against the real
 `Is Laundering` label, the verifier block rate and reasons, the grounding pass rate, and
 cost/latency per case. This is a small honest baseline (8 mined cases, not a large
-statistical sample — see the script's header comment) meant to prove the metrics pipeline is
-wired to real ground truth, not a claim about model quality at scale. Cost/latency figures
-read as $0/negligible against the current seeded placeholder cassettes, since those carry no
-recorded token usage — re-seed with `AML_LLM_MODE=record` against the live API to get real
-numbers.
+statistical sample) meant to prove the metrics pipeline is wired to real ground truth, not a
+claim about model quality at scale. Current results and known limitations are in the
+[AI system card](docs/explanation/system-card.md#evaluation). They include a ground-truth label
+that currently leaks into the Evidence agent's input.
 
 ## Tests
 
@@ -222,9 +238,9 @@ numbers.
 AML_LLM_MODE=replay bun test
 ```
 
-73 tests, no API key required — everything replays against committed cassettes and the
-committed real-data slice. See `tests/` for the full list; each file's purpose is documented
-in the plan doc's test table.
+88 tests across 13 files, no API key required: each test seeds the cassettes it needs and
+runs against the committed real-data slice. What each file proves is listed in the
+[commands reference](docs/reference/commands.md#tests).
 
 **Known flakiness:** the native `duckdb` Bun binding occasionally throws an opaque
 `DUCKDB_NODEJS_ERROR` under concurrent access from the test runner, independent of the
@@ -244,8 +260,10 @@ bun run typecheck
 2. Run C-005 — routes straight to `ESCALATED_SANCTIONS` on a real OFAC SDN match; no typology
    assessment, verification, or case packet is ever produced (the AML pipeline never
    adjudicates a sanctions hit).
-3. Run C-002 or C-008 — a true negative / near-miss closes with `CLOSE` and a documented
-   rationale, not a suspicion narrative.
+3. Run C-002 or C-008 (a true negative and a near-miss). Check that the counter-hypotheses carry
+   the innocent explanation. With current recordings the model still recommends
+   `INVESTIGATE_FURTHER` (C-002) and `CONSIDER_SAR` (C-008). That over-escalation is a documented
+   limitation, and it is why the analyst must justify any override.
 4. On an `AWAITING_ANALYST` case, pick a disposition that disagrees with the AI recommendation
    without an override reason — rejected with 400. Add the reason — accepted, case closes to
    `QA`, and the audit log records the override separately.
