@@ -176,6 +176,13 @@ export function compactMoney(n: number): string {
   return `$${n.toFixed(2)}`;
 }
 
+/** Out divided by in, rendered as a multiple: 0.01x, 1.54x, 1,050x. */
+export function ratioText(n: number): string {
+  if (n >= 100) return `${Math.round(n).toLocaleString("en-US")}x`;
+  if (n >= 10) return `${n.toFixed(1)}x`;
+  return `${n.toFixed(2)}x`;
+}
+
 export function fullMoney(n: number): string {
   return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }

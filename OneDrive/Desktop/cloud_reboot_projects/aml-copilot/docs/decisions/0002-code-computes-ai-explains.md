@@ -22,7 +22,8 @@ the prompt-injection attack surface.
 
 ## Consequences
 
-- Every number in a case packet can be traced to a `Computation` and recomputed by the verifier.
+- Every figure an agent is given comes from a `Computation` that the verifier recomputes. Numbers the agents
+  write into prose are checked only by the Verifier model, which is a known gap.
 - Prompt injection has nothing to hijack: no agent can invoke anything.
 - An agent can't ask for more data mid-investigation. Gaps must be declared instead.
 - The model's value is concentrated where a template would fail: case-specific narrative, profile-mismatch

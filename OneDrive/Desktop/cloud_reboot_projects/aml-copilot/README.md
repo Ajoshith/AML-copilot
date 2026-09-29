@@ -137,8 +137,9 @@ AML_LLM_MODE=replay bun test tests/verifier.test.ts
 
 Every Evidence point, Typology match, and Case Packet finding carries a `source_id`
 (`txn:ibm:HI-Small:<row>`, `sdn:ofac:<date>:<ent_num>`, `kyc:overlay:<account>:v1`, ...). The
-Verifier agent (`src/agents/verifier.ts`) independently recomputes every named `Computation`
-from the real data and confirms every cited `source_id`/`ffiecClauseId` actually resolves —
+Verifier agent (`src/agents/verifier.ts`) recomputes every named `Computation` from the real
+data and confirms every cited `source_id`/`ffiecClauseId` actually resolves (numbers written
+into prose are checked by the Verifier model, not by code) —
 `verifyDeterministic()` is pure code, never a model, and a mismatch fails closed
 (`BLOCKED_VERIFICATION`, packet withheld). In the UI, every fact-bearing sentence in a case
 packet is rendered with its clickable source id.
@@ -261,8 +262,8 @@ bun run typecheck
    assessment, verification, or case packet is ever produced (the AML pipeline never
    adjudicates a sanctions hit).
 3. Run C-002 or C-008 (a true negative and a near-miss). Check that the counter-hypotheses carry
-   the innocent explanation. With current recordings the model still recommends
-   `INVESTIGATE_FURTHER` (C-002) and `CONSIDER_SAR` (C-008). That over-escalation is a documented
+   the innocent explanation. With current recordings the model still escalates both
+   (`ESCALATE_EDD`) and never recommends `CLOSE` for any clean case. That over-escalation is a documented
    limitation, and it is why the analyst must justify any override.
 4. On an `AWAITING_ANALYST` case, pick a disposition that disagrees with the AI recommendation
    without an override reason — rejected with 400. Add the reason — accepted, case closes to

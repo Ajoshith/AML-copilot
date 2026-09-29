@@ -11,10 +11,12 @@
  * wired to real ground truth (`Is Laundering`), not a claim about model quality
  * at scale. Re-run with a larger mined set once that's needed.
  *
- * Also: the committed demo cassettes (scripts/seed-demo-cassettes.ts) are
- * hand-written placeholders, not real recorded model output, so their
- * `usage` field is empty and cost figures below will read as $0 / N/A until
- * cassettes are re-recorded against the live API (AML_LLM_MODE=record).
+ * Cost/latency accounting: the audit log is append-only across every run ever made
+ * (tests, demos, older recordings), so this script counts only the events appended
+ * DURING each case's evaluation run. A replayed event carries the recorded token usage
+ * but its own near-zero replay latency, so per-call latency is taken from the original
+ * record-mode event for the same cassette key. Hand-seeded placeholder cassettes
+ * (scripts/seed-demo-cassettes.ts) have neither, and read as 0 tokens / no latency.
  */
 import { readFile } from "node:fs/promises";
 import { z } from "zod";
@@ -46,7 +48,7 @@ interface CaseEvalResult {
   modelCallCount: number;
   totalInputTokens: number;
   totalOutputTokens: number;
-  totalLatencyMs: number;
+  callLatenciesMs: number[]; // original recorded latency, one per call that has one
   estimatedCostUsd: number;
   error: string | null;
 }
@@ -82,12 +84,18 @@ async function evaluateCase(c: z.infer<typeof MinedCaseSchema>): Promise<CaseEva
     modelCallCount: 0,
     totalInputTokens: 0,
     totalOutputTokens: 0,
-    totalLatencyMs: 0,
+    callLatenciesMs: [],
     estimatedCostUsd: 0,
   };
 
   try {
     _resetStoreForTests();
+    const rowsBefore = await readCaseAuditLog(c.caseId, { sarScoped: true });
+    const recordedLatencyByKey = new Map<string, number>();
+    for (const row of rowsBefore) {
+      const p = ModelCallEventSchema.safeParse(row);
+      if (p.success && p.data.cassetteMode === "record") recordedLatencyByKey.set(p.data.cassetteKey, p.data.latencyMs);
+    }
     const record = await runCase({ caseId: c.caseId, accountId: c.accountId, useSlice: true });
 
     base.state = record.state;
@@ -97,13 +105,14 @@ async function evaluateCase(c: z.infer<typeof MinedCaseSchema>): Promise<CaseEva
     base.unsupportedClaimCount = record.verification?.unsupportedClaims.length ?? 0;
     base.recalcMismatchCount = record.verification?.recalcMismatches.length ?? 0;
 
-    const auditRows = await readCaseAuditLog(c.caseId, { sarScoped: true });
+    const auditRows = (await readCaseAuditLog(c.caseId, { sarScoped: true })).slice(rowsBefore.length);
     for (const row of auditRows) {
       const parsed = ModelCallEventSchema.safeParse(row);
       if (!parsed.success) continue;
       const event = parsed.data;
       base.modelCallCount += 1;
-      base.totalLatencyMs += event.latencyMs;
+      const recordedLatency = recordedLatencyByKey.get(event.cassetteKey);
+      if (recordedLatency !== undefined) base.callLatenciesMs.push(recordedLatency);
       const inputTokens = event.usage?.inputTokens ?? 0;
       const outputTokens = event.usage?.outputTokens ?? 0;
       base.totalInputTokens += inputTokens;
@@ -177,14 +186,16 @@ function printCostAndLatency(results: CaseEvalResult[]) {
   const scored = results.filter((r) => !r.error);
   const totalCost = scored.reduce((s, r) => s + r.estimatedCostUsd, 0);
   const totalCalls = scored.reduce((s, r) => s + r.modelCallCount, 0);
-  const latencies = scored.flatMap((r) => (r.modelCallCount > 0 ? [r.totalLatencyMs / r.modelCallCount] : []));
+  const latencies = scored.flatMap((r) => r.callLatenciesMs);
+  const totalInput = scored.reduce((s, r) => s + r.totalInputTokens, 0);
+  const totalOutput = scored.reduce((s, r) => s + r.totalOutputTokens, 0);
 
   console.log("\n=== Cost and latency (placeholder pricing; see file header) ===");
-  console.log(`  Total model calls: ${totalCalls}`);
+  console.log(`  Model calls in this evaluation: ${totalCalls} (${totalInput} input + ${totalOutput} output tokens, as recorded)`);
   console.log(`  Total estimated cost: $${totalCost.toFixed(4)}`);
   console.log(`  Estimated cost per case: $${scored.length > 0 ? (totalCost / scored.length).toFixed(4) : "n/a"}`);
-  console.log(`  Per-agent-call latency P50: ${percentile(latencies, 50).toFixed(0)}ms`);
-  console.log(`  Per-agent-call latency P90: ${percentile(latencies, 90).toFixed(0)}ms`);
+  console.log(`  Per-agent-call recorded latency P50: ${latencies.length ? percentile(latencies, 50).toFixed(0) + "ms" : "n/a"}`);
+  console.log(`  Per-agent-call recorded latency P90: ${latencies.length ? percentile(latencies, 90).toFixed(0) + "ms" : "n/a"} (${latencies.length}/${totalCalls} calls have a recorded latency)`);
   if (totalCalls > 0 && scored.every((r) => r.totalInputTokens === 0 && r.totalOutputTokens === 0)) {
     console.log(
       `  (All usage figures are 0 — cassettes in fixtures/cassettes/ are hand-seeded placeholders with no ` +

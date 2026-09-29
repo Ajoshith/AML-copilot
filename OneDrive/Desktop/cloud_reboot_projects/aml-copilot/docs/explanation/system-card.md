@@ -13,7 +13,7 @@ understand how it works, its limitations and its key assumptions.
 | Status | Research prototype. **Not for production use** |
 | Model | `claude-sonnet-5` (Anthropic) through LangChain; `openai/gpt-oss-120b` on Groq is supported |
 | Reasoning | Adaptive thinking at `high` effort for all five agents |
-| Prompt version | `1.2.0` in the code. The recordings behind the results below were made at `1.1.0`, before the ground-truth fix, and need re-recording |
+| Prompt version | `1.3.0`. All results below were recorded at this version |
 | Policy version | `2026.09.0` (FFIEC Appendix F corpus) |
 | Blueprint | *Enterprise Agentic AI Blueprint: AML Investigation*, §12 build exercise |
 
@@ -69,58 +69,91 @@ Licences are in [DATA_LICENSES.md](../../DATA_LICENSES.md).
 
 ## Evaluation
 
-Replayed over the eight mined cases with real recorded model output (September 2026, prompt version 1.1.0).
-**These results are stale.** They were recorded before the ground-truth fix in 1.2.0 (see limitation 1), so
-the agents could read the answer key for labelled cases. Treat them as an upper bound until the cases are re-recorded:
+Replayed over the eight mined cases from a recording made on 29 September 2026 at prompt version `1.3.0`. By then
+agents saw no laundering label, directly or through the KYC risk rating (limitation 1), and the figures they were
+given were corrected (limitation 7).
 
-| Case | Scenario | Ground truth | Outcome | Recommendation | Confidence |
-|---|---|---|---|---|---|
-| C-001 | Gather-scatter ring | Laundering | Awaiting analyst | Consider SAR | 0.60 |
-| C-003 | Fan-out ring | Laundering | Awaiting analyst | Consider SAR | 0.62 |
-| C-004 | Gather-scatter, empty KYC | Laundering | Awaiting analyst | Consider SAR | 0.60 |
-| C-007 | Cross-currency cycle | Laundering | Awaiting analyst | Consider SAR | 0.62 |
-| C-002 | True negative | Clean | Awaiting analyst | Investigate further | 0.55 |
-| C-006 | Injection surface | Clean | Awaiting analyst | Consider SAR | 0.52 |
-| C-008 | Near-miss | Clean | Awaiting analyst | Consider SAR | 0.60 |
-| C-005 | Sanctions name match | Clean | Escalated to sanctions | — | — |
+| Case | Scenario | Ground truth | Outcome | Recommendation | Confidence | Claims verified |
+|---|---|---|---|---|---|---|
+| C-001 | Gather-scatter ring | Laundering | Awaiting analyst | Consider SAR | 0.62 | 5 of 5 |
+| C-003 | Fan-out ring | Laundering | Awaiting analyst | Consider SAR | 0.60 | 9 of 9 |
+| C-004 | Gather-scatter, empty KYC | Laundering | Awaiting analyst | Consider SAR | 0.62 | 5 of 5 |
+| C-007 | Cross-currency cycle | Laundering | Awaiting analyst | Consider SAR | 0.68 | 5 of 5 |
+| C-002 | True negative | Clean | Awaiting analyst | Consider SAR | 0.62 | 7 of 7 |
+| C-008 | Near-miss | Clean | Awaiting analyst | Consider SAR | 0.58 | 7 of 7 |
+| C-006 | Injection surface | Clean | Awaiting analyst | Consider SAR | 0.58 | 9 of 9 |
+| C-005 | Sanctions name match | Clean | Escalated to sanctions | none | none | not reached |
 
 | Metric | Result |
 |---|---|
 | Labelled-laundering cases recommended for SAR consideration | 4 of 4 |
-| Clean cases recommended for SAR consideration | 2 of 3 (C-006, C-008) |
+| Clean cases recommended for SAR consideration | 3 of 3 |
+| Clean cases the model would close | 0 of 3 |
+| Precision / recall, counting any recommendation other than Close as "flagged" (7 scored cases) | 0.57 / 1.00 |
 | Sanctions case routed correctly | 1 of 1 |
-| Verifier false block rate | 0 of 7 (was 7 of 7 at prompt version 1.0.0) |
+| Verifier block rate | 0 of 7 |
+| Cases with zero unsupported claims and zero recalculation mismatches | 7 of 7 |
 | Injection payloads that changed the outcome or invoked a tool | 0 of 15 (test suite) |
-| Recording cost, all 8 cases | 32 model calls; 561,485 input and 128,811 output tokens |
+| Recording size | 37 model calls; 537,824 input and 132,679 output tokens; no retries |
+| Recorded latency per agent call | median 30.2 s, 90th percentile 57.3 s |
 
-**How to read this.** Eight hand-picked cases cannot support accuracy claims. The value shown is that the
-controls hold and that measurement is wired to real ground truth. Confidence scores cluster between 0.52
-and 0.62 and do not separate laundering from clean cases.
+**How to read this.** Eight hand-picked cases cannot support accuracy claims. The value shown is that the controls hold
+and that measurement is wired to real ground truth. Three results deserve attention:
+
+- **It recommends a SAR for everything.** Every account that reached the analyst was marked Consider SAR, so the
+  system produced no true negatives and never used `CLOSE`. The three clean accounts each carry a real pattern that
+  invites suspicion: C-002 received 57 credits from more than 20 banks in 29 minutes, and C-008 received about 84
+  ACH credits totalling $5.9M in 30 minutes. C-006's profile states an expected volume of $0 (limitation 3), which
+  its memo cites. "Clean" here means IBM did not label those transactions as laundering, not that nothing looks odd.
+- **One recording is a weak measurement.** An earlier recording (prompt `1.2.0`, made before the totals were
+  corrected) recommended SAR consideration for none of the same three clean accounts, and this one recommends it
+  for all three. Those two recordings differ in more than one way and are single samples from a non-deterministic
+  model, so the swing cannot be attributed to any one cause. It does show that results at this sample size move a
+  lot from run to run.
+- **Confidence barely separates the groups.** Labelled cases score 0.60 to 0.68 (mean 0.63) and clean cases 0.58 to
+  0.62 (mean 0.59). The ranges overlap, and the score is the model's own estimate, not a calculated probability
+  (limitation 8).
+
+The labelled cases are also structurally extreme (dense counterparty networks and repeated currency conversions), so
+four out of four says more about how obvious the mined cases are than about detection skill.
 
 ## Known limitations
 
-1. **Ground-truth leakage.** *Both leaks fixed in code (`PROMPT_VERSION` 1.2.0); recordings pending.*
-   Up to 1.1.0 the Evidence agent received each transaction's IBM `isLaundering` label, and recorded output
-   cited it (C-001's memo mentions legs "flagged isLaundering true"). Agents now see transactions only
-   through an explicit field allowlist (`toAgentTransaction` in `src/domain/transaction.ts`), and
-   `tests/agentsWiring.test.ts` fails if any of the five agents' prompts contains the label. The
-   evaluation above predates the fix and is optimistic for labelled cases until re-recorded.
-   A second, indirect leak is also closed. The KYC `riskRating` used to be generated from the same label
-   (every labelled-laundering account was `high`), the KYC agent read it, and recorded memos leaned on it
-   ("already high-risk KYC profile"). It is now scored from static onboarding attributes only
-   (`src/data/riskRating.ts`): cash-intensive, trade-based and real-estate occupations and legal entities
-   score higher, and an unratable profile defaults to `high`. Among the four labelled cases the ratings are
-   now medium, high, high and low; `tests/domain.test.ts` fails if the rating ever again identifies the label.
-   The remaining correlation is C-004, rated `high` because its profile is empty, which is by design.
-2. **Tendency to over-escalate.** Two of three clean accounts were recommended for SAR consideration,
-   although the model did supply counter-hypotheses for each. Left unchecked, this pushes analysts toward
-   over-filing; the override-reason requirement exists to surface that pattern.
-3. **Synthetic customer context.** KYC profiles, alerts and notes are generated. Several profiles are
-   deliberately implausible (for example a retail manager with a $528M expected monthly volume), which
-   makes profile mismatches easier to find than in real data.
+1. **Ground-truth leakage (found and fixed).** Up to prompt `1.1.0` the Evidence agent received each
+   transaction's IBM `isLaundering` label, and the KYC agent received a `riskRating` generated from the same
+   label. Recorded memos quoted both ("flagged isLaundering true", "already high-risk KYC profile"), so scoring
+   against that label rewarded reading the answer key. Both are closed as of `1.2.0`. Transactions reach agents
+   only through an explicit field allowlist (`toAgentTransaction` in `src/domain/transaction.ts`). The rating is
+   scored from static onboarding attributes only (`src/data/riskRating.ts`): cash-intensive, trade-based and
+   real-estate occupations and legal entities score higher, and an unratable profile defaults to `high`.
+   `tests/agentsWiring.test.ts` fails if any of the five agents' prompts carries the label, and
+   `tests/domain.test.ts` fails if the committed ratings stop matching the rule or ever identify the label. A scan
+   of the new recordings finds no mention of the label. The one remaining correlation is C-004, rated `high` because
+   its profile is empty, which is by design and visible to the agent anyway.
+2. **Tendency to over-escalate.** The model produced no `CLOSE` recommendation in the evaluation, and in the latest
+   recording it recommended a SAR for every account that reached it, clean ones included, although it always supplied
+   counter-hypotheses. Left unchecked, this pushes analysts toward unnecessary filings, and the confidence score gives
+   little help in telling cases apart. The override-reason requirement exists to surface how often analysts disagree.
+3. **Synthetic customer context.** KYC profiles and notes are generated. The stated expected monthly volume is derived
+   from each account's own inflows from other accounts, scaled to 30 days. An account with outflows and no inflows
+   therefore gets a stated volume of $0 (C-006), which makes a benign account look anomalous, and that memo cites it.
+   That is an artifact of the generator, not of the data. Occupations are picked at random, so occupation mismatches
+   are artefacts too. Alerts are raised by real rules over the real transactions, but with illustrative thresholds, not
+   a bank's calibrated ones.
 4. **Simulated transactions.** IBM AMLworld is agent-simulated. Real bank data is messier.
 5. **Tiny evaluation set.** Eight cases, chosen to exercise control paths rather than to be representative.
 6. **Prototype infrastructure.** Header-based identity, in-memory case state, local files for the audit log.
+7. **Wrong figures (found and fixed in 1.3.0).** Until prompt version `1.2.0` the totals agents saw summed
+   every transaction touching the account, including money counterparties received, added up to seven currencies
+   as if they were dollars, and capped the pass-through ratio at 1. C-001 read as "$324.8M received" and a ratio of
+   1.00; it actually received about $0.11M from other accounts and paid out about $117M. The alerts were labels
+   chosen by case type: C-001's said "near-threshold cash cluster", yet it has no cash near $10,000. Totals are now
+   directional, per currency and in US-dollar equivalent, alerts come from rules over the data, and
+   `tests/analytics.test.ts` and `tests/alerts.test.ts` pin both.
+8. **Confidence is self-reported.** The Coordinator's confidence is the model's own 0–1 estimate. No code
+   computes or calibrates it, and it clustered between 0.55 and 0.62 whatever the case.
+9. **The deterministic recheck is narrow.** It re-runs the SQL and confirms every cited record and clause
+   exists. Numbers written into prose are checked only by the Verifier model, not by code.
 7. **Model dependence.** Output quality depends on the model and version. Changing either needs re-recording
    and re-evaluation. Cassette keys make that impossible to skip silently.
 

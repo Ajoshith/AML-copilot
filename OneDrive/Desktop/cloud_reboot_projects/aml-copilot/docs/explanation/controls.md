@@ -23,9 +23,10 @@ record.
   least one valid source ID, or the response is rejected (`src/domain/agentOutputs.ts`).
 - Typology matches may only cite clause IDs that exist in the FFIEC corpus. An invented clause ID fails the
   verifier's deterministic pass.
-- Every number comes from a `Computation` produced by SQL (`src/analytics/`). The verifier's deterministic
-  pass (`verifyDeterministic` in `src/agents/verifier.ts`) re-runs each computation and confirms every
-  cited source ID resolves.
+- The figures agents are given come from `Computation`s produced by code (`src/analytics/`). The verifier's
+  deterministic pass (`verifyDeterministic` in `src/agents/verifier.ts`) re-runs each computation and confirms
+  every cited source ID and clause resolves. It does not parse numbers out of the agents' prose; those are checked
+  by the model pass below.
 - A model pass then checks prose for unsupported material claims. `FAIL` sends the case to
   `BLOCKED_VERIFICATION`, and the packet is never produced.
 - In the UI, every citation is clickable and resolves to the underlying record through

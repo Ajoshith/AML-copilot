@@ -15,7 +15,8 @@ public equivalent exists.
   Manual, Appendix F.
 - Cases are **mined** from the real data by structure and label (`scripts/select-cases.ts`), not written by
   hand.
-- KYC profiles, alerts and notes are generated (`scripts/build-overlay.ts`). Every one carries an
+- Alerts are raised by monitoring rules over the real transactions (`src/analytics/alertRules.ts`).
+- KYC profiles and notes are generated (`scripts/build-overlay.ts`). Every one carries an
   `:overlay:` source ID, and the UI shows those citations in amber rather than green.
 - Only a small derived slice of the transactions is committed, to respect the CDLA-Sharing licence and keep
   the repository small.

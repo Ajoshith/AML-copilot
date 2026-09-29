@@ -34,7 +34,7 @@ A scripted five-minute walkthrough for an audience. It matches slide 11 of the
 
 | # | Do | Point out |
 |---|---|---|
-| 1 | Open **C-001** | Pipeline stepper (all steps done, waiting at *Analyst*), key-figure strip, and the recommendation: *Consider SAR*, 60% confidence. |
+| 1 | Open **C-001** | Pipeline stepper (all steps done, waiting at *Analyst*), key-figure strip, and the recommendation: *Consider SAR*, 62% confidence (the model's own estimate, not a calculated probability). |
 | 2 | Read the **Why** block | Bottom line first, then activity pattern, customer profile, red flags and alternative explanations. The AI is required to argue the innocent explanation too. |
 | 3 | **Evidence** tab → click a green citation | The source panel shows the real IBM transaction behind the claim. Green means real data, amber means generated overlay. |
 | 4 | **Typology** tab | Each red flag quotes the actual FFIEC Appendix F wording, with a strength rating and its supporting records. |

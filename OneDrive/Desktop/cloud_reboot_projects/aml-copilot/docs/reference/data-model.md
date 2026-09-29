@@ -13,7 +13,7 @@ Every fact carries a source ID of the form `<layer>:<provenance>:<key>`
 | `sdn` | `sdn:ofac:2026-09-10:10002` | OFAC SDN entry (list date : entity number) | Yes | Green |
 | `policy` | `policy:ffiec-appF:funds-transfers:6` | FFIEC Appendix F clause (section : index) | Yes | Green |
 | `kyc` | `kyc:overlay:8075AC7C0:v1` | Generated customer profile | No | Amber |
-| `alert` | `alert:overlay:8075AC7C0:v1` | Generated monitoring alert | No | Amber |
+| `alert` | `alert:tm:8075AC7C0:gather-scatter` | Monitoring alert raised by a rule (below) over the real transactions | Simulated | Amber |
 | `note` | `note:overlay:8075AC7C0:1` | Generated analyst note or wire memo | No | Amber |
 
 The `policy:` prefix is a UI and drill-through convention. Typology matches store the bare clause ID
@@ -106,9 +106,53 @@ doesn't parse is a failure, not a partial result.
 ### Computation (deterministic code)
 
 `{ name, value, inputsHash, sourceIds[], codeVersion }`. Produced by `src/analytics/`, never by a model.
-Names include `txnCount`, `totalReceived`, `totalPaid`, `passThroughRatio`, `velocityTxnPerDay`,
-`inDegree`, `outDegree`, `nearThresholdCashCount`, `sanctionsMatchScore` and
-`formatBreakdown:<format>:count|total`.
+Money is kept apart by direction and currency. A row is an **inflow** (from another account), an **outflow**
+(to another account) or a **self-transfer** (the account paying itself, often a currency conversion), which
+counts as neither. Amounts in different currencies are never added together: cross-currency totals exist only as
+US-dollar equivalents, named `...Usd`, converted with the rates the IBM simulator used
+(`data/reference/fx-rates.json`, recovered from the dataset by `scripts/derive-fx-rates.ts`).
+
+| Name | Meaning |
+|---|---|
+| `txnCount` | Every row touching the account |
+| `inflowCount`, `outflowCount`, `selfTransferCount`, `selfFxConversionCount` | Rows by direction; conversions are self-transfers that change currency |
+| `totalInUsd`, `totalOutUsd` | Money in from and out to other accounts, US-dollar equivalent |
+| `inflow:<currency>`, `outflow:<currency>` | Native totals, one per currency |
+| `outflowToInflowRatio` | `totalOutUsd ÷ totalInUsd`, **not capped**. Near 1: funds pass straight through. Far above 1: more left than arrived, so the source is not visible. Omitted when nothing came in |
+| `currencyCount`, `cashTxnCount`, `velocityTxnPerDay` | |
+| `nearThresholdCashCount`, `nearThresholdCashTotalUsd` | Cash worth $8,500 to $9,999, just under the $10,000 reporting threshold |
+| `inDegree`, `outDegree`, `mutualCounterpartyCount` | Distinct senders, recipients, and counterparties seen both ways |
+| `formatBreakdown:<format>:count`, `formatBreakdown:<format>:totalUsd` | Channel mix over every row, US-dollar equivalent |
+| `sanctionsMatchScore` | Best OFAC name similarity, 0 to 1 |
+
+Before prompt version 1.3.0 the totals summed every row touching the account, counting what counterparties
+received as this account's income, and added up to seven currencies as if they were dollars; the pass-through
+ratio was capped at 1. C-001 showed "$324.8M received" and 1.00. It actually received about $0.11M from other
+accounts and paid out about $117M (1,050x).
+
+## Monitoring alerts
+
+Alerts are raised by fixed rules in `src/analytics/alertRules.ts`, never assigned by hand:
+`tests/alerts.test.ts` re-runs every rule and fails if `data/overlay/alerts.json` differs. Each alert records its
+rule and version, the condition, what the account showed, the triggering records, and `firedAt`, the time of
+the triggering transaction. The earliest alert is the one that opened the case, and the investigation's as-of
+date (including KYC staleness) is measured from it.
+
+The thresholds are illustrative prototype values chosen from each typology, not calibrated to a real bank.
+
+| Rule | Fires when | Cases |
+|---|---|---|
+| `structuring-near-threshold-cash` v1 | 3+ cash transactions worth $8,500 to $9,999 within 7 days | none |
+| `gather-scatter` v1 | 10+ distinct senders and 10+ distinct recipients within 30 days | C-001, C-004, C-007 |
+| `fan-out` v1 | 10+ distinct recipients, at most 9 distinct senders, within 30 days | C-003 |
+| `fan-in-burst` v1 | 20+ distinct senders within 60 minutes | C-002, C-005, C-008 |
+| `fx-conversion-then-transfer` v1 | 3+ times: a self currency conversion, then a payment out in the new currency within 60 minutes | C-001, C-004, C-007 |
+| `outflow-exceeds-inflow` v1 | Money out is more than 2x money in and at least $100,000 (USD equivalent) | C-001, C-003, C-007 |
+| `sanctions-name-screen` v1 | Account holder name has similarity 0.85+ to an OFAC name or alias | C-005 |
+| `kyc-review-overdue` v1 | No KYC review on file, or the last one is more than 365 days old | all 8 |
+
+C-006's transactions trip no monitoring rule: only the periodic KYC review opened it.
+
 
 ## Tool permission classes
 

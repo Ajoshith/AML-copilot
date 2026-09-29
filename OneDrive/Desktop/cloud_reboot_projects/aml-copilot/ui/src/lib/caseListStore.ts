@@ -8,6 +8,7 @@ export interface CaseSummary {
   rationale: string;
   isLaundering: boolean;
   state: string | null;
+  alerts: { ruleId: string; title: string; observed: string; firedAt: string }[];
 }
 
 /** Bumped whenever an action (run, decision) should invalidate the case list —

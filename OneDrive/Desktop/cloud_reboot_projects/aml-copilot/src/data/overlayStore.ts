@@ -27,6 +27,9 @@ async function loadAlerts(): Promise<Map<string, Alert[]>> {
     list.push(alert);
     alertsByAccount.set(alert.accountId, list);
   }
+  // Oldest first: the first alert is the one that opened the case, and its firedAt is
+  // the as-of date the investigation (and KYC staleness) is measured from.
+  for (const list of alertsByAccount.values()) list.sort((a, b) => a.firedAt.localeCompare(b.firedAt));
   return alertsByAccount;
 }
 

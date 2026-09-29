@@ -30,11 +30,13 @@ stale output.
 
 | Constant | Current | Bump when |
 |---|---|---|
-| `PROMPT_VERSION` | `1.2.0` | Any agent's system prompt, or what data an agent is shown, changes |
+| `PROMPT_VERSION` | `1.3.0` | Any agent's system prompt, or what data an agent is shown, changes |
 | `POLICY_VERSION` | `2026.09.0` | `src/policy/typologies.yaml` (the FFIEC corpus) changes |
 | `AGENT_EFFORT` | `high` | Not normally changed. One flat effort level for all five agents |
 
-`PROMPT_VERSION` history: `1.2.0` stopped agents seeing the IBM `isLaundering` ground-truth label, directly
+`PROMPT_VERSION` history: `1.3.0` corrected the totals agents see (directional, per currency, US-dollar
+equivalent, uncapped ratio) and raised alerts from rules ([data model](data-model.md#monitoring-alerts)).
+`1.2.0` stopped agents seeing the IBM `isLaundering` ground-truth label, directly
 or through the KYC risk rating, and invalidated every earlier recording ([system card](../explanation/system-card.md#known-limitations)).
 `1.1.0` narrowed the verifier to material facts and gave it the deterministic
 computations. `1.0.0` blocked every case (see [ADR 0005](../decisions/0005-verifier-checks-material-facts-only.md)).
@@ -47,7 +49,8 @@ All paths are relative to the project root.
 |---|---|---|
 | `data/raw/` | Full downloaded sources | No |
 | `data/slice/transactions.parquet` | Real transactions for the 8 mined accounts | Yes |
-| `data/overlay/` | `cases.json` plus generated KYC, alerts and notes | Yes |
+| `data/overlay/` | `cases.json`, generated KYC and notes, and rule-raised alerts | Yes |
+| `data/reference/fx-rates.json` | Exchange rates recovered from the IBM data | Yes |
 | `src/policy/typologies.yaml` | FFIEC Appendix F red-flag corpus | Yes |
 | `fixtures/cassettes/` | Recorded model responses, one JSON file per key | No |
 | `audit/case-<id>.jsonl` | Full per-case audit log | No |

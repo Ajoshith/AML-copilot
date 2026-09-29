@@ -1,11 +1,12 @@
 /**
- * Generates the three fabricated overlay layers (KYC, alerts, notes) for the 8
+ * Generates the overlay (fabricated KYC and notes, rule-raised alerts) for the 8
  * cases mined by select-cases.ts, and writes a committed Parquet slice of the real
  * transactions touching those 8 accounts so `bun test` never needs the 475 MB CSV.
  *
- * Every overlay record is clearly source-labelled ("kyc:overlay:...", "alert:overlay:...",
- * "note:overlay:...") so the UI and tests can always distinguish generated facts from
- * real ones (txn:/sdn:/policy: prefixes) — see src/domain/ids.ts.
+ * KYC and note records are source-labelled "kyc:overlay:..." / "note:overlay:..." so the UI
+ * and tests can always tell generated facts from real ones (txn:/sdn:/policy:). Alerts are
+ * not invented here: they are raised by the rules in src/analytics/alertRules.ts over the
+ * real transactions, and labelled "alert:tm:...".
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { z } from "zod";
@@ -18,18 +19,10 @@ import { INJECTION_PAYLOADS } from "../src/data/injectionCorpus.ts";
 import { screenSanctions } from "../src/analytics/sanctionsMatch.ts";
 import { DATA_OVERLAY_DIR, DATA_SLICE_DIR } from "../src/config.ts";
 import { riskRatingFor } from "../src/data/riskRating.ts";
+import { accountRows, directionOf, usdValueOf } from "../src/analytics/aggregates.ts";
+import { evaluateAlertRules } from "../src/analytics/alertRules.ts";
 import type { MinedCase } from "./select-cases.ts";
 import { MinedCaseSchema } from "./select-cases.ts";
-
-const RULE_BY_CLASSIFICATION: Record<string, { ruleId: string; ruleVersion: string }> = {
-  "gather-scatter-like": { ruleId: "near-threshold-cash-cluster", ruleVersion: "v3" },
-  "fan-out-like": { ruleId: "high-velocity-fanout", ruleVersion: "v2" },
-  "cross-currency-cycle-like": { ruleId: "cross-currency-layering", ruleVersion: "v1" },
-  "true-negative": { ruleId: "periodic-review", ruleVersion: "v1" },
-  "near-miss": { ruleId: "near-threshold-cash-cluster", ruleVersion: "v3" },
-  "sanctions-name-match": { ruleId: "sanctions-name-screen", ruleVersion: "v4" },
-  "injection-surface": { ruleId: "periodic-review", ruleVersion: "v1" },
-};
 
 const OCCUPATIONS = [
   "Independent contractor",
@@ -89,21 +82,33 @@ async function findSanctionsName(): Promise<{ sdnName: string; entNum: string }>
   return { sdnName: row.sdn_name, entNum: row.ent_num };
 }
 
-async function accountFinancials(accountId: string): Promise<{ totalReceived: number; days: number }> {
-  const [row] = await query<{ total_received: number; days: number }>(
-    `
-    SELECT
-      coalesce(sum(amount_received) FILTER (WHERE to_account = ?), 0)                     AS total_received,
-      greatest(date_diff('day', min(ts), max(ts)), 1)                                     AS days
-    FROM transactions_raw
-    WHERE from_account = ? OR to_account = ?
-    `,
-    [accountId, accountId, accountId],
-  );
-  return { totalReceived: row!.total_received, days: Number(row!.days) };
+/** The stated expected monthly volume, derived from the account's own observed inflows:
+ * money received from OTHER accounts, in US-dollar equivalent, scaled to 30 days. An
+ * earlier version counted self-transfers and summed seven currencies as if they were
+ * dollars, which is where C-001's absurd $528M/month came from. */
+export async function expectedMonthlyVolumeUsd(accountId: string): Promise<number> {
+  const rows = await accountRows(accountId);
+  const inUsd = rows.filter((r) => directionOf(r, accountId) === "in").reduce((sum, r) => sum + usdValueOf(r, "in"), 0);
+  const days = rows.length > 1 ? Math.max(1, Math.floor((+rows.at(-1)!.ts - +rows[0]!.ts) / 86_400_000)) : 1;
+  return Math.round((inUsd / days) * 30 * 100) / 100;
 }
 
-function buildKyc(c: MinedCase, accountHolderName: string, expectedMonthlyVolume: number | null): CustomerRecord {
+/** Raises every account's alerts by running the monitoring rules; numbered A-1001.. in order. */
+export async function buildAlerts(kycRecords: CustomerRecord[], opts: { useSlice?: boolean } = {}): Promise<Alert[]> {
+  const alerts: Alert[] = [];
+  for (const kyc of kycRecords) {
+    for (const a of await evaluateAlertRules(kyc.accountId, kyc, opts)) {
+      alerts.push(AlertSchema.parse({ ...a, alertId: `A-${1001 + alerts.length}` }));
+    }
+  }
+  return alerts;
+}
+
+/** Before the September 2022 transactions, so the profile is about 2.5 years stale as
+ * of the alerts. (It used to be 2024-03-15, which postdates every transaction.) */
+export const LAST_REVIEW_DATE = "2020-03-15";
+
+export function buildKyc(c: MinedCase, accountHolderName: string, expectedMonthlyVolume: number | null): CustomerRecord {
   const isStale = c.caseId === "C-004";
   const occupation = isStale ? null : deterministicPick(OCCUPATIONS, c.accountId);
   const businessType = isStale ? null : deterministicPick(["Sole proprietorship", "LLC", "Individual"], c.accountId + "b");
@@ -115,25 +120,8 @@ function buildKyc(c: MinedCase, accountHolderName: string, expectedMonthlyVolume
     businessType,
     statedExpectedMonthlyVolume: isStale ? null : expectedMonthlyVolume,
     riskRating: riskRatingFor({ occupation, businessType }),
-    lastReviewDate: isStale ? null : "2024-03-15",
+    lastReviewDate: isStale ? null : LAST_REVIEW_DATE,
     jurisdiction: "US",
-  });
-}
-
-function buildAlert(c: MinedCase, index: number): Alert {
-  const rule = RULE_BY_CLASSIFICATION[c.classification] ?? { ruleId: "periodic-review", ruleVersion: "v1" };
-  const firedAt = new Date();
-  const dueDate = new Date(firedAt.getTime() + 30 * 24 * 60 * 60 * 1000);
-  return AlertSchema.parse({
-    sourceId: `alert:overlay:${c.accountId}:v1`,
-    alertId: `A-${1000 + index}`,
-    accountId: c.accountId,
-    ruleId: rule.ruleId,
-    ruleVersion: rule.ruleVersion,
-    firedAt: firedAt.toISOString(),
-    jurisdiction: "US",
-    dueDate: dueDate.toISOString(),
-    sarConfidentialitySensitive: true,
   });
 }
 
@@ -186,18 +174,12 @@ async function main() {
   const alerts: Alert[] = [];
   const notes: Note[] = [];
 
-  let index = 0;
   for (const c of cases) {
-    index += 1;
     const accountHolderName = c.caseId === "C-005" ? sdnName : await pickNonSanctionedName(c.accountId);
-
-    const { totalReceived, days } = await accountFinancials(c.accountId);
-    const expectedMonthlyVolume = Math.round((totalReceived / days) * 30 * 100) / 100;
-
-    kycRecords.push(buildKyc(c, accountHolderName, expectedMonthlyVolume));
-    alerts.push(buildAlert(c, index));
+    kycRecords.push(buildKyc(c, accountHolderName, await expectedMonthlyVolumeUsd(c.accountId)));
     notes.push(...buildNotes(c));
   }
+  alerts.push(...(await buildAlerts(kycRecords)));
 
   await mkdir(DATA_OVERLAY_DIR, { recursive: true });
   await writeFile(`${DATA_OVERLAY_DIR}/kyc.json`, JSON.stringify(kycRecords, null, 2), "utf8");

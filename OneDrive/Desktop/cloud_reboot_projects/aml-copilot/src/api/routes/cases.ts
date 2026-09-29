@@ -7,6 +7,7 @@ import { readCaseAuditLog } from "../../audit/log.ts";
 import { readIdentity, isSarScoped } from "../identity.ts";
 import { resolveSource, collectCitedSourceIds } from "../../data/sourceResolver.ts";
 import { DATA_OVERLAY_DIR } from "../../config.ts";
+import { getAlertsForAccount } from "../../data/overlayStore.ts";
 
 const RunBodySchema = z.object({ accountId: z.string() });
 
@@ -22,7 +23,18 @@ export const casesRoutes = new Elysia({ prefix: "/cases" })
   .get("/", async () => {
     const cases = JSON.parse(await readFile(`${DATA_OVERLAY_DIR}/cases.json`, "utf8")) as MinedCaseSummary[];
     return {
-      cases: cases.map((c) => ({ ...c, state: getCaseRecord(c.caseId).state })),
+      cases: await Promise.all(
+        cases.map(async (c) => ({
+          ...c,
+          state: getCaseRecord(c.caseId).state,
+          alerts: (await getAlertsForAccount(c.accountId)).map((a) => ({
+            ruleId: a.ruleId,
+            title: a.title,
+            observed: a.observed,
+            firedAt: a.firedAt,
+          })),
+        })),
+      ),
     };
   })
 

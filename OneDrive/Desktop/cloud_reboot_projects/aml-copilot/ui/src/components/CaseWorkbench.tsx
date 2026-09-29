@@ -3,7 +3,7 @@ import { api } from "../lib/eden";
 import { authHeaders, role } from "../lib/identity";
 import { refetchCaseList, type CaseSummary } from "../lib/caseListStore";
 import type { CaseRecordShape, ResolvedSourceData } from "../lib/caseTypes";
-import { compactMoney, computationMap, humanize, stateMeta } from "../lib/format";
+import { compactMoney, computationMap, humanize, ratioText, stateMeta } from "../lib/format";
 import { pushToast } from "../lib/toast";
 import { Icon, type IconName } from "./Icon";
 import { SourceContext, SourcePanel, type OpenSource } from "./Sources";
@@ -229,9 +229,10 @@ export function CaseWorkbench(props: { summary: CaseSummary }) {
     const m = computationMap(r.computations);
     const out: { label: string; value: string }[] = [];
     if (m.has("txnCount")) out.push({ label: "Txns", value: m.get("txnCount")!.toLocaleString() });
-    if (m.has("totalReceived")) out.push({ label: "Received", value: compactMoney(m.get("totalReceived")!) });
-    if (m.has("totalPaid")) out.push({ label: "Paid", value: compactMoney(m.get("totalPaid")!) });
-    if (m.has("passThroughRatio")) out.push({ label: "Pass-thru", value: m.get("passThroughRatio")!.toFixed(2) });
+    if (m.has("totalInUsd")) out.push({ label: "In (USD)", value: compactMoney(m.get("totalInUsd")!) });
+    if (m.has("totalOutUsd")) out.push({ label: "Out (USD)", value: compactMoney(m.get("totalOutUsd")!) });
+    if (m.has("totalOutUsd"))
+      out.push({ label: "Out ÷ in", value: m.has("outflowToInflowRatio") ? ratioText(m.get("outflowToInflowRatio")!) : "no inflow" });
     if (r.kycAssessment)
       out.push({
         label: "KYC review",
@@ -325,6 +326,7 @@ export function CaseWorkbench(props: { summary: CaseSummary }) {
               <span class="ready-icon"><Icon name={running() ? "search" : "play"} size={26} /></span>
               <h2>{running() ? "Investigation in progress" : "Ready to investigate"}</h2>
               <p class="ready-rationale">{props.summary.rationale}</p>
+              <AlertChips alerts={props.summary.alerts} />
               <Show
                 when={running()}
                 fallback={
@@ -445,5 +447,28 @@ export function CaseWorkbench(props: { summary: CaseSummary }) {
         <SourcePanel sourceId={panelSourceId()} loading={panelLoading()} data={panelData()} onClose={closePanel} />
       </div>
     </SourceContext.Provider>
+  );
+}
+
+/** The monitoring alerts that opened this case: the rule that fired and what it saw. */
+export function AlertChips(props: { alerts: CaseSummary["alerts"] }) {
+  return (
+    <Show when={props.alerts.length > 0}>
+      <div class="alert-list">
+        <span class="alert-list-label">
+          <Icon name="flag" size={12} /> Opened by {props.alerts.length} monitoring alert{props.alerts.length === 1 ? "" : "s"}
+        </span>
+        <ul>
+          <For each={props.alerts}>
+            {(a) => (
+              <li class="alert-chip">
+                <strong>{a.title}</strong>
+                <span>{a.observed}</span>
+              </li>
+            )}
+          </For>
+        </ul>
+      </div>
+    </Show>
   );
 }

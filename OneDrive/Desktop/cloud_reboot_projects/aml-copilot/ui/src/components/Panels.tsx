@@ -9,6 +9,7 @@ import {
   dispositionMeta,
   fullMoney,
   highlightFacts,
+  ratioText,
   humanize,
   parseClauseId,
   structureSummary,
@@ -350,12 +351,23 @@ export function AnalyticsPanel(props: { r: CaseRecordShape }) {
   const formats = () => {
     const rows: { name: string; count: number; total: number }[] = [];
     for (const [key, total] of m()) {
-      const match = /^formatBreakdown:(.+):total$/.exec(key);
+      const match = /^formatBreakdown:(.+):totalUsd$/.exec(key);
       if (match) rows.push({ name: match[1]!, total, count: m().get(`formatBreakdown:${match[1]}:count`) ?? 0 });
     }
     return rows.sort((a, b) => b.total - a.total);
   };
   const maxTotal = () => Math.max(1, ...formats().map((f) => f.total));
+  const currencies = () => {
+    const byCcy = new Map<string, { currency: string; inflow: number | null; outflow: number | null }>();
+    for (const [key, value] of m()) {
+      const match = /^(inflow|outflow):(.+)$/.exec(key);
+      if (!match) continue;
+      const row = byCcy.get(match[2]!) ?? { currency: match[2]!, inflow: null, outflow: null };
+      row[match[1] as "inflow" | "outflow"] = value;
+      byCcy.set(match[2]!, row);
+    }
+    return [...byCcy.values()].sort((a, b) => a.currency.localeCompare(b.currency));
+  };
   const [showAll, setShowAll] = createSignal(false);
 
   const tile = (label: string, key: string, fmt: (n: number) => string, note?: string, icon: IconName = "analytics") => (
@@ -377,19 +389,22 @@ export function AnalyticsPanel(props: { r: CaseRecordShape }) {
 
       <div class="stat-grid">
         {tile("Transactions", "txnCount", (n) => n.toLocaleString(), undefined, "transfer")}
-        {tile("Total received", "totalReceived", compactMoney)}
-        {tile("Total paid", "totalPaid", compactMoney)}
-        {tile("Pass-through ratio", "passThroughRatio", (n) => n.toFixed(2), "1.0 = everything in goes back out")}
+        {tile("Money in (USD eq)", "totalInUsd", compactMoney, "Received from other accounts")}
+        {tile("Money out (USD eq)", "totalOutUsd", compactMoney, "Paid to other accounts")}
+        {tile("Out ÷ in", "outflowToInflowRatio", ratioText, "Near 1x: passes straight through. Far above: source of funds not visible")}
+        {tile("Self-transfers", "selfTransferCount", (n) => String(n), "Account paying itself; excluded from in and out")}
+        {tile("Currency conversions", "selfFxConversionCount", (n) => String(n), "Self-transfers that change currency")}
+        {tile("Currencies", "currencyCount", (n) => String(n))}
         {tile("Velocity", "velocityTxnPerDay", (n) => `${n.toFixed(1)}/day`, undefined, "clock")}
         {tile("Counterparties in", "inDegree", (n) => String(n))}
         {tile("Counterparties out", "outDegree", (n) => String(n))}
-        {tile("Near-threshold cash", "nearThresholdCashCount", (n) => String(n), "Deposits just under $10K")}
+        {tile("Near-threshold cash", "nearThresholdCashCount", (n) => String(n), "Cash worth $8,500 to $9,999")}
         {tile("Sanctions score", "sanctionsMatchScore", (n) => `${(n * 100).toFixed(0)}%`, undefined, "alert")}
       </div>
 
       <Show when={formats().length > 0}>
         <article class="card">
-          <CardHead icon="analytics" chip="chip-analytics" title="Value by payment format" sub="Total value moved per channel, with transaction count" />
+          <CardHead icon="analytics" chip="chip-analytics" title="Value by payment format" sub="Every transaction touching the account, in US-dollar equivalent, with count" />
           <div class="bar-chart" role="table" aria-label="Value by payment format">
             <For each={formats()}>
               {(f) => (
@@ -405,6 +420,30 @@ export function AnalyticsPanel(props: { r: CaseRecordShape }) {
                 </div>
               )}
             </For>
+          </div>
+        </article>
+      </Show>
+
+      <Show when={currencies().length > 0}>
+        <article class="card">
+          <CardHead icon="transfer" chip="chip-analytics" title="Money by currency" sub="Native amounts, never added across currencies" />
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>Currency</th><th class="num">In</th><th class="num">Out</th></tr>
+              </thead>
+              <tbody>
+                <For each={currencies()}>
+                  {(c) => (
+                    <tr>
+                      <td>{c.currency}</td>
+                      <td class="num mono">{c.inflow === null ? "—" : fullMoney(c.inflow)}</td>
+                      <td class="num mono">{c.outflow === null ? "—" : fullMoney(c.outflow)}</td>
+                    </tr>
+                  )}
+                </For>
+              </tbody>
+            </table>
           </div>
         </article>
       </Show>

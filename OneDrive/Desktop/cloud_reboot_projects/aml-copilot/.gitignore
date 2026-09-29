@@ -47,3 +47,6 @@ fixtures/cassettes/
 ui/dist
 ui/node_modules
 
+
+# Office lock files created while a document is open
+~$*

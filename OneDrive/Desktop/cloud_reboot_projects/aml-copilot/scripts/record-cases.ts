@@ -23,11 +23,14 @@ interface MinedCaseSummary {
   accountId: string;
 }
 
-async function tokensUsedFor(caseId: string): Promise<{ calls: number; input: number; output: number }> {
+/** Counts only the model calls appended after `sinceRow`: the audit log is append-only
+ * across every run ever made, so without this a re-recording would also report all the
+ * earlier recordings' calls and tokens. */
+async function tokensUsedFor(caseId: string, sinceRow: number): Promise<{ calls: number; input: number; output: number }> {
   let calls = 0;
   let input = 0;
   let output = 0;
-  for (const row of await readCaseAuditLog(caseId, { sarScoped: true })) {
+  for (const row of (await readCaseAuditLog(caseId, { sarScoped: true })).slice(sinceRow)) {
     const parsed = ModelCallEventSchema.safeParse(row);
     if (!parsed.success || parsed.data.cassetteMode !== "record") continue;
     calls += 1;
@@ -70,8 +73,9 @@ async function main() {
     process.stdout.write(`  ${c.caseId} ... `);
     try {
       _resetStoreForTests();
+      const rowsBefore = (await readCaseAuditLog(c.caseId, { sarScoped: true })).length;
       const record = await runCase({ caseId: c.caseId, accountId: c.accountId, useSlice: true });
-      const { calls, input, output } = await tokensUsedFor(c.caseId);
+      const { calls, input, output } = await tokensUsedFor(c.caseId, rowsBefore);
       totalCalls += calls;
       totalInput += input;
       totalOutput += output;

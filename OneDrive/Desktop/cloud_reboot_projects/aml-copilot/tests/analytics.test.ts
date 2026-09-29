@@ -64,11 +64,56 @@ describe("analytics runs against the committed real-data slice", () => {
     expect(Number(outDeg.value)).toBeGreaterThanOrEqual(0);
   });
 
-  test("detectPatterns pass-through ratio stays within [0,1]", async () => {
-    const patterns = await detectPatterns(c001.accountId, { useSlice: true });
-    const ratio = patterns.find((c) => c.name === "passThroughRatio")!;
-    expect(Number(ratio.value)).toBeGreaterThanOrEqual(0);
-    expect(Number(ratio.value)).toBeLessThanOrEqual(1);
+  test("C-001 money in and out are directional and in US-dollar equivalent", async () => {
+    const byName = new Map(
+      [...(await computeAggregates(c001.accountId, { useSlice: true })), ...(await detectPatterns(c001.accountId, { useSlice: true }))].map(
+        (c) => [c.name, c.value],
+      ),
+    );
+    // 77 rows: 31 from other accounts, 35 to other accounts, 11 to itself.
+    expect(byName.get("txnCount")).toBe(77);
+    expect(byName.get("inflowCount")).toBe(31);
+    expect(byName.get("outflowCount")).toBe(35);
+    expect(byName.get("selfTransferCount")).toBe(11);
+    // Previously reported as "$324.8M received" (every row, seven currencies summed).
+    expect(byName.get("totalInUsd")).toBeCloseTo(111_584.25, 0);
+    expect(byName.get("totalOutUsd")).toBeCloseTo(117_196_632.23, 0);
+    // Previously capped and reported as 1.00.
+    expect(byName.get("outflowToInflowRatio")).toBeCloseTo(1050.2973, 3);
+    expect(byName.has("totalReceived")).toBe(false);
+    expect(byName.has("passThroughRatio")).toBe(false);
+  });
+
+  test("no computed total adds different currencies together", async () => {
+    const aggregates = await computeAggregates(c001.accountId, { useSlice: true });
+    const timeline = await getAccountTimeline(c001.accountId, { useSlice: true });
+    // Each native per-currency total equals the sum of that currency's own rows only.
+    for (const c of aggregates.filter((c) => /^inflow:/.test(c.name))) {
+      const ccy = c.name.slice("inflow:".length);
+      const expected = timeline
+        .filter((t) => t.toAccount === c001.accountId && t.fromAccount !== c001.accountId && t.receivingCurrency === ccy)
+        .reduce((s, t) => s + t.amountReceived, 0);
+      expect(Number(c.value)).toBeCloseTo(expected, 2);
+    }
+    // Every cross-currency total is labelled as a US-dollar equivalent.
+    const money = aggregates.filter((c) => /total/i.test(c.name) && !/count/i.test(c.name));
+    expect(money.length).toBeGreaterThan(0);
+    for (const c of money) expect(c.name).toMatch(/Usd$/);
+  });
+
+  test("the exchange rates reproduce the dataset's own cross-currency payments", async () => {
+    const { FX_UNITS_PER_USD } = await import("../src/analytics/fx.ts");
+    let checked = 0;
+    for (const c of cases) {
+      for (const t of await getAccountTimeline(c.accountId, { useSlice: true })) {
+        if (t.paymentCurrency !== "US Dollar" || t.receivingCurrency === "US Dollar" || t.amountPaid <= 1) continue;
+        const implied = t.amountReceived / t.amountPaid;
+        const rate = FX_UNITS_PER_USD[t.receivingCurrency]!;
+        expect(Math.abs(implied - rate) / rate).toBeLessThan(0.01);
+        checked++;
+      }
+    }
+    expect(checked).toBeGreaterThan(0);
   });
 
   test("C-002 (true negative) has zero laundering-flagged transactions in its own timeline", async () => {

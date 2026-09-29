@@ -78,6 +78,19 @@ export type ResolvedSourceData =
         jurisdiction: string;
       };
     }
-  | { sourceId: string; layer: "alert"; record: { ruleId: string; ruleVersion: string; firedAt: string; dueDate: string } }
+  | {
+      sourceId: string;
+      layer: "alert";
+      record: {
+        ruleId: string;
+        ruleVersion: string;
+        title: string;
+        condition: string;
+        observed: string;
+        evidenceSourceIds: string[];
+        firedAt: string;
+        dueDate: string;
+      };
+    }
   | { sourceId: string; layer: "note"; record: { text: string } }
   | { sourceId: string; layer: "policy"; clause: { id: string; text: string } };

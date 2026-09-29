@@ -23,8 +23,17 @@ export const POLICY_VERSION = "2026.09.0";
  *   high-risk KYC profile"), which contaminated any evaluation against that label. The
  *   system prompts are unchanged; the user content is not, so every cassette recorded
  *   at 1.1.0 or earlier is invalid and must be re-recorded.
+ * 1.3.0 — The computed figures agents see were wrong. Totals summed every row touching
+ *   the account (counting what counterparties received as this account's income) and
+ *   added up to seven currencies as if they were dollars, and the pass-through ratio
+ *   was capped at 1. C-001 showed "$324.8M received" and ratio 1.00; it actually received
+ *   about $0.11M from other accounts and paid out about $117M, 1,050x. Totals are now
+ *   directional, per currency, and in US-dollar equivalent via rates recovered from the
+ *   dataset (data/reference/fx-rates.json); the ratio is uncapped (outflowToInflowRatio).
+ *   Alerts are now raised by rules (src/analytics/alertRules.ts) and fire at the time of
+ *   the triggering transactions, so KYC staleness is measured from 2022, not 2026.
  */
-export const PROMPT_VERSION = "1.2.0";
+export const PROMPT_VERSION = "1.3.0";
 
 export type LlmProvider = "anthropic" | "groq";
 

@@ -1,0 +1,81 @@
+{
+  "source": "Derived from IBM AMLworld HI-Small_Trans.csv: median of Amount Received / Amount Paid over rows paid in US Dollars",
+  "note": "The simulator used one fixed rate per currency. Amounts are converted to US-dollar equivalents for comparison only; the native amounts stay the record of truth.",
+  "rates": {
+    "US Dollar": {
+      "unitsPerUsd": 1,
+      "samples": 0,
+      "maxDeviationPct": 0
+    },
+    "Australian Dollar": {
+      "unitsPerUsd": 1.4128,
+      "samples": 1389,
+      "maxDeviationPct": 0.2319
+    },
+    "Bitcoin": {
+      "unitsPerUsd": 0.00008416243655,
+      "samples": 350,
+      "maxDeviationPct": 0.6605
+    },
+    "Brazil Real": {
+      "unitsPerUsd": 5.646500014,
+      "samples": 757,
+      "maxDeviationPct": 0.0683
+    },
+    "Canadian Dollar": {
+      "unitsPerUsd": 1.3193,
+      "samples": 1524,
+      "maxDeviationPct": 0.1996
+    },
+    "Euro": {
+      "unitsPerUsd": 0.8533999996,
+      "samples": 15786,
+      "maxDeviationPct": 0.4386
+    },
+    "Mexican Peso": {
+      "unitsPerUsd": 21.14310012,
+      "samples": 911,
+      "maxDeviationPct": 0.0321
+    },
+    "Ruble": {
+      "unitsPerUsd": 77.804,
+      "samples": 1934,
+      "maxDeviationPct": 0.059
+    },
+    "Rupee": {
+      "unitsPerUsd": 73.44400001,
+      "samples": 2307,
+      "maxDeviationPct": 0.1315
+    },
+    "Saudi Riyal": {
+      "unitsPerUsd": 3.751100001,
+      "samples": 838,
+      "maxDeviationPct": 0.0077
+    },
+    "Shekel": {
+      "unitsPerUsd": 3.377000019,
+      "samples": 2204,
+      "maxDeviationPct": 0.0926
+    },
+    "Swiss Franc": {
+      "unitsPerUsd": 0.9150000014,
+      "samples": 2507,
+      "maxDeviationPct": 0.1261
+    },
+    "UK Pound": {
+      "unitsPerUsd": 0.774200009,
+      "samples": 2468,
+      "maxDeviationPct": 0.448
+    },
+    "Yen": {
+      "unitsPerUsd": 105.4,
+      "samples": 2026,
+      "maxDeviationPct": 0.2016
+    },
+    "Yuan": {
+      "unitsPerUsd": 6.697600001,
+      "samples": 2547,
+      "maxDeviationPct": 0.2491
+    }
+  }
+}

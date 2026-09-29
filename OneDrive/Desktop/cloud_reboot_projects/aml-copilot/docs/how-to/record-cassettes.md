@@ -5,8 +5,9 @@ Record real model output so the pipeline, the UI and evaluation can replay it of
 ## You need
 
 - An API key for the provider in use (`ANTHROPIC_API_KEY` for the default Anthropic provider) in `.env`.
-- Budget for the run. The last full recording of all eight cases made 32 model calls and used
-  561,485 input and 128,811 output tokens.
+- Budget for the run. The last full recording of all eight cases made 37 model calls (five agents per case,
+  two for the sanctions case) and used about 540,000 input and 133,000 output tokens. A retried case is billed
+  again for the calls it repeated. Each call took about 30 s at the median and 57 s at the 90th percentile.
 
 ## Steps
 
@@ -24,8 +25,11 @@ Record real model output so the pipeline, the UI and evaluation can replay it of
    AML_LLM_MODE=record bun run scripts/record-cases.ts
    ```
 
-   The script prints each case's end state, token usage and latency, and exits non-zero listing any
-   cases that failed so you can retry just those.
+   The script prints each case's end state, the calls and tokens used by that run, and its duration, and exits
+   non-zero listing any cases that failed so you can retry just those. A run can fail with an opaque
+   "Invalid Error" raised in the analytics step (it happened once, on C-002), most likely the flaky DuckDB binding
+   noted in the [commands reference](../reference/commands.md#tests). Retrying that case succeeded. Cases are
+   processed in the order of `data/overlay/cases.json`, not the order of the IDs you pass.
 
 4. Confirm the recording replays cleanly:
 

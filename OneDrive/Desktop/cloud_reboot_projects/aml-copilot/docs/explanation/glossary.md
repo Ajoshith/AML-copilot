@@ -19,7 +19,9 @@
 | **Structuring** | Splitting transactions to stay under reporting thresholds such as $10,000 |
 | **Layering** | Moving funds through many transactions, accounts or currencies to obscure their origin |
 | **Fan-out / gather-scatter** | Network shapes: one account paying many (fan-out), or collecting from many and then paying out to many (gather-scatter) |
-| **Pass-through ratio** | How much of the money coming in goes straight back out. Near 1.0 suggests a conduit account |
+| **Out ÷ in ratio** | Money paid to other accounts divided by money received from them, in US-dollar equivalent and uncapped. Near 1x suggests a conduit account; far above 1x means the source of the outgoing funds is not visible |
+| **USD equivalent** | An amount converted to US dollars with the dataset's own fixed rates, so different currencies can be compared. Native amounts stay the record |
+| **Self-transfer** | The account paying itself, often to convert currency. Counted as neither money in nor money out |
 | **Disposition** | The analyst's decision on a case: close, investigate further, escalate to EDD, escalate to sanctions, or consider a SAR |
 | **Model risk management (MRM)** | A bank's governance of the models it uses. U.S. supervisory guidance is SR 11-7 |
 
@@ -35,7 +37,8 @@
 | **Data gap** | Information the investigation needed but didn't have. Flagged, never guessed |
 | **Blocking gap** | A data gap that must be resolved before a disposition |
 | **Hard stop** | The `AWAITING_ANALYST` state. Only an authenticated analyst decision leaves it |
-| **Overlay** | The synthetic layer of KYC profiles, alerts and notes. Source IDs contain `:overlay:` |
+| **Overlay** | The synthetic layer of KYC profiles and notes. Source IDs contain `:overlay:` |
+| **Monitoring rule** | A fixed condition over the transactions that raises an alert, e.g. gather-scatter. Source IDs start `alert:tm:` |
 | **Override** | An analyst disposition that differs from the AI recommendation. It needs a written reason |
 | **SAR-scoped role** | A role allowed to see SAR-sensitive content: `analyst` or `sanctions` |
 | **Source ID** | The provenance tag on every fact, such as `txn:ibm:HI-Small:423257` |

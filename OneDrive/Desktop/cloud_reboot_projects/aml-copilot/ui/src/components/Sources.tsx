@@ -140,12 +140,24 @@ function renderSourceBody(d: ResolvedSourceData): JSX.Element {
       );
     case "alert":
       return (
-        <dl class="kv">
-          <Field label="Rule" mono>{d.record.ruleId}</Field>
-          <Field label="Version" mono>{d.record.ruleVersion}</Field>
-          <Field label="Fired" mono>{fmtDate(d.record.firedAt)}</Field>
-          <Field label="Due" mono>{fmtDate(d.record.dueDate)}</Field>
-        </dl>
+        <>
+          <div class="src-hero">
+            <span class="src-hero-name">{d.record.title}</span>
+          </div>
+          <dl class="kv">
+            <Field label="Rule" mono>{d.record.ruleId} {d.record.ruleVersion}</Field>
+            <Field label="Fires when">{d.record.condition}</Field>
+            <Field label="Observed">{d.record.observed}</Field>
+            <Field label="Fired" mono>{fmtDate(d.record.firedAt)}</Field>
+            <Field label="Due" mono>{fmtDate(d.record.dueDate)}</Field>
+          </dl>
+          <Show when={d.record.evidenceSourceIds.length > 0}>
+            <div class="src-evidence">
+              <span class="src-flow-label">Triggering records</span>
+              <SourceList sourceIds={d.record.evidenceSourceIds} />
+            </div>
+          </Show>
+        </>
       );
     case "note":
       return (
@@ -204,9 +216,11 @@ export function SourcePanel(props: {
           </header>
           <div class="source-panel-provenance" classList={{ overlay: isOverlaySource(id()) }}>
             <Icon name={isOverlaySource(id()) ? "info" : "database"} size={12} />
-            {isOverlaySource(id())
-              ? "Generated overlay data — not from a real-world source"
-              : "Real public data — resolved live from the source dataset"}
+            {sourceLayer(id()) === "alert"
+              ? "Simulated monitoring alert, raised by a fixed rule over the real transactions"
+              : isOverlaySource(id())
+                ? "Generated overlay data — not from a real-world source"
+                : "Real public data — resolved live from the source dataset"}
           </div>
           <div class="source-panel-body">
             <Show when={props.loading}>

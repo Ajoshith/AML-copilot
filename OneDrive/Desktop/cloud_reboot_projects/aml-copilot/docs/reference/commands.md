@@ -29,7 +29,8 @@ Run from the project root. `bun run <name>` runs a `package.json` script.
 | `replay.test.ts` | Replay reproduces an identical packet; a version bump changes the cassette key |
 | `api.test.ts` | Role rules and status codes on every route; filing-shaped routes 404 |
 | `sourceResolver.test.ts` | Each source layer resolves; uncited IDs are refused |
-| `analytics.test.ts` | Deterministic analytics are correct; `src/analytics/` imports no LLM code |
+| `analytics.test.ts` | Totals are directional and never mix currencies; C-001's figures are pinned; the exchange rates reproduce the data; `src/analytics/` imports no LLM code |
+| `alerts.test.ts` | Committed alerts are exactly what the rules produce; each cites the case's own transactions |
 | `llmCassette.test.ts` | Cassette keys are stable and sensitive to every input |
 | `agentsWiring.test.ts` | Each agent's prompt and schema are wired correctly |
 | `domain.test.ts`, `duckdb.test.ts` | Schemas and the database binding |
@@ -43,7 +44,8 @@ Re-running the failed file on its own passes. It is an environment issue, not a 
 |---|---|---|
 | `bun run data:fetch` | Download IBM, OFAC and FFIEC sources into `data/raw/` | Network |
 | `bun run data:select-cases` | Mine 8 cases into `data/overlay/cases.json` | `data/raw/` |
-| `bun run data:build-overlay` | Generate KYC, alerts and notes; write the Parquet slice | `cases.json` |
+| `bun run scripts/derive-fx-rates.ts` | Recover the dataset's exchange rates into `data/reference/fx-rates.json` | `data/raw/` |
+| `bun run data:build-overlay` | Generate KYC and notes, raise alerts with the monitoring rules, write the Parquet slice | `cases.json` |
 | `AML_LLM_MODE=record bun run scripts/record-cases.ts [C-00x …]` | Record real model output | API key |
 | `bun run scripts/seed-demo-cassettes.ts` | Write placeholder cassettes. **Overwrites recordings** | Nothing |
 | `bun run replay <caseId>` | Replay one case from cassettes; always forces replay | Cassettes |

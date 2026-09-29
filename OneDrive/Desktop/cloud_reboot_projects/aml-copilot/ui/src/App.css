@@ -1474,3 +1474,11 @@ mark.fact-id {
   .step-stopped .step-label { display: block; position: absolute; top: 30px; }
   .stepper { padding-bottom: 28px; }
 }
+
+/* --- Alerts that opened the case ------------------------------------------ */
+.alert-list { width: 100%; max-width: 640px; text-align: left; display: flex; flex-direction: column; gap: 8px; }
+.alert-list-label { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 650; text-transform: uppercase; letter-spacing: 0.06em; color: var(--warning); }
+.alert-list ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.alert-chip { display: flex; flex-direction: column; gap: 2px; padding: 9px 12px; border-radius: var(--r-md); background: var(--warning-bg); border: 1px solid var(--warning-border); font-size: 13px; }
+.alert-chip span { color: var(--text-2); font-size: 12.5px; }
+.src-evidence { display: flex; flex-direction: column; gap: 8px; }

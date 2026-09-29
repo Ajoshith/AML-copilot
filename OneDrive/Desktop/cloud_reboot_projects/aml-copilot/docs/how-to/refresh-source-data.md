@@ -19,6 +19,12 @@ This downloads into the gitignored `data/raw/`:
 
 ## 2. Mine cases and build the overlay
 
+If the transactions changed, re-derive the exchange rates first, because the overlay and alerts use them:
+
+```bash
+bun run scripts/derive-fx-rates.ts
+```
+
 ```bash
 bun run data:select-cases
 ```
@@ -29,7 +35,8 @@ bun run data:build-overlay
 
 `select-cases` picks eight accounts from real structural signals and the dataset's own `Is Laundering`
 labels, and writes `data/overlay/cases.json`. `build-overlay` generates the synthetic KYC profiles,
-alerts and notes for those accounts, and writes a fresh `data/slice/transactions.parquet`.
+notes for those accounts, raises their alerts by running the monitoring rules, and writes a fresh
+`data/slice/transactions.parquet`.
 
 ## 3. Bump versions and re-record
 

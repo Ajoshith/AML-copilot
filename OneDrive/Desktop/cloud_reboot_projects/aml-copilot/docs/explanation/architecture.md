@@ -18,7 +18,7 @@ control properties a bank would need before letting an agent near this workflow.
 | Priority | Goal | Meaning here |
 |---|---|---|
 | 1 | **Human authority** | Only an authenticated analyst can dispose of a case. No code path lets a model do it |
-| 2 | **Groundedness** | Every material fact cites a source record; every number comes from deterministic code |
+| 2 | **Groundedness** | Every material fact cites a source record; every figure agents are given comes from deterministic code |
 | 3 | **Confidentiality** | SAR-sensitive content is visible only to SAR-scoped roles and absent from generic logs |
 | 4 | **Reproducibility** | Any run can be replayed exactly, with the model, prompt and policy versions that produced it |
 | 5 | **Injection resistance** | Text in case data can never act as an instruction |
@@ -35,7 +35,7 @@ control properties a bank would need before letting an agent near this workflow.
 
 - **Regulatory posture.** The SAR decision must stay human. The system must never file, submit or take
   adverse action.
-- **Data.** Real KYC data is private by law, so customer profiles, alerts and notes are synthetic and
+- **Data.** Real KYC data is private by law, so customer profiles and notes are synthetic and
   labelled as such. Transactions, sanctions and red flags are real public data.
 - **Prototype scope.** Header-based identity stands in for SSO. Case state is held in memory.
 - **Technology.** TypeScript on Bun throughout, chosen for one toolchain (runtime, test runner, package
@@ -184,7 +184,7 @@ See the [ADR log](../decisions/README.md).
 
 | Item | Impact | Note |
 |---|---|---|
-| Model tends to recommend `CONSIDER_SAR` | Automation-bias risk | See the [system card](system-card.md#evaluation) |
+| Model never recommended `CLOSE` in the evaluation | Unnecessary analyst work; automation-bias risk | See the [system card](system-card.md#evaluation) |
 | In-memory case store | State lost on restart | Acceptable for a prototype; replace with a database |
 | Header-based identity | No real authentication | Must be replaced by SSO before any real use |
 | Recorded cassettes are not in git | A fresh clone cannot demo without recording or seeding | Deliberate: they are large and model-specific |

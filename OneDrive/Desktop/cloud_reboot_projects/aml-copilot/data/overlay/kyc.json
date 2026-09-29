@@ -5,9 +5,9 @@
     "accountHolderName": "Alex Chen",
     "occupation": "Retail shop manager",
     "businessType": "Individual",
-    "statedExpectedMonthlyVolume": 528369155.4,
+    "statedExpectedMonthlyVolume": 371947.5,
     "riskRating": "medium",
-    "lastReviewDate": "2024-03-15",
+    "lastReviewDate": "2020-03-15",
     "jurisdiction": "US"
   },
   {
@@ -16,9 +16,9 @@
     "accountHolderName": "Jordan Novak",
     "occupation": "Restaurant owner",
     "businessType": "Sole proprietorship",
-    "statedExpectedMonthlyVolume": 557546.31,
+    "statedExpectedMonthlyVolume": 139861.41,
     "riskRating": "high",
-    "lastReviewDate": "2024-03-15",
+    "lastReviewDate": "2020-03-15",
     "jurisdiction": "US"
   },
   {
@@ -38,9 +38,9 @@
     "accountHolderName": "Alex Chen",
     "occupation": "Independent contractor",
     "businessType": "Individual",
-    "statedExpectedMonthlyVolume": 27800801.16,
+    "statedExpectedMonthlyVolume": 381872.62,
     "riskRating": "low",
-    "lastReviewDate": "2024-03-15",
+    "lastReviewDate": "2020-03-15",
     "jurisdiction": "US"
   },
   {
@@ -49,9 +49,9 @@
     "accountHolderName": "Jordan Novak",
     "occupation": "Freelance graphic designer",
     "businessType": "Sole proprietorship",
-    "statedExpectedMonthlyVolume": 1108211.94,
+    "statedExpectedMonthlyVolume": 1049862.2,
     "riskRating": "low",
-    "lastReviewDate": "2024-03-15",
+    "lastReviewDate": "2020-03-15",
     "jurisdiction": "US"
   },
   {
@@ -60,9 +60,9 @@
     "accountHolderName": "Jordan Chen",
     "occupation": "Freelance graphic designer",
     "businessType": "Sole proprietorship",
-    "statedExpectedMonthlyVolume": 21969447.79,
+    "statedExpectedMonthlyVolume": 21958837.69,
     "riskRating": "low",
-    "lastReviewDate": "2024-03-15",
+    "lastReviewDate": "2020-03-15",
     "jurisdiction": "US"
   },
   {
@@ -71,9 +71,9 @@
     "accountHolderName": "COMERCIALIZADORA DE CAFE DEL OCCIDENTE CODECAFE LTDA.",
     "occupation": "Import/export consultant",
     "businessType": "Sole proprietorship",
-    "statedExpectedMonthlyVolume": 2381811.8,
+    "statedExpectedMonthlyVolume": 2539194.19,
     "riskRating": "high",
-    "lastReviewDate": "2024-03-15",
+    "lastReviewDate": "2020-03-15",
     "jurisdiction": "US"
   },
   {
@@ -82,9 +82,9 @@
     "accountHolderName": "Jordan Okafor",
     "occupation": "Independent contractor",
     "businessType": "LLC",
-    "statedExpectedMonthlyVolume": 832416.3,
+    "statedExpectedMonthlyVolume": 0,
     "riskRating": "low",
-    "lastReviewDate": "2024-03-15",
+    "lastReviewDate": "2020-03-15",
     "jurisdiction": "US"
   }
 ]
