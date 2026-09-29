@@ -5,7 +5,7 @@ start the app, and investigate a real case end to end. It takes about 15 minutes
 
 By the end you will have:
 
-- run 88 automated tests
+- run 92 automated tests
 - opened the investigator workbench in your browser
 - walked a case from alert to a recorded human decision
 - clicked a citation through to the real transaction behind it
@@ -34,7 +34,7 @@ This installs the backend and the `ui/` workspace together.
 bun test
 ```
 
-You should see `88 pass, 0 fail`. The tests use `AML_LLM_MODE=replay`, the default, which reads
+You should see `92 pass, 0 fail`. The tests use `AML_LLM_MODE=replay`, the default, which reads
 recorded model responses ("cassettes") instead of calling a model. Each test seeds the cassettes
 it needs, so the suite runs offline and needs no API key.
 

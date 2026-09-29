@@ -22,6 +22,7 @@ import {
 import { verifyCase, buildVerifierUserContent, SYSTEM_PROMPT as VERIFIER_PROMPT } from "../src/agents/verifier.ts";
 import { POLICY_VERSION, DATA_OVERLAY_DIR } from "../src/config.ts";
 import type { SourceId } from "../src/domain/ids.ts";
+import { toAgentTransaction } from "../src/domain/transaction.ts";
 import { seedCassette, removeCassettes } from "./helpers/seedCassette.ts";
 
 _resetForTests();
@@ -32,6 +33,9 @@ const cases = JSON.parse(await readFile(`${DATA_OVERLAY_DIR}/cases.json`, "utf8"
   accountId: string;
 }>;
 const c001 = cases.find((c) => c.caseId === "C-001")!;
+
+// The IBM label, in either its column form or its field form.
+const LABEL = /is[_ ]?laundering/i;
 
 test("full agent chain — evidence -> kyc -> typology -> verifier -> coordinator — wired end-to-end via seeded cassettes", async () => {
   const seededKeys: string[] = [];
@@ -151,4 +155,56 @@ test("full agent chain — evidence -> kyc -> typology -> verifier -> coordinato
   expect(casePacket.recommendation).toBe("INVESTIGATE_FURTHER");
 
   await removeCassettes(seededKeys);
+});
+
+test("no agent prompt carries the IBM ground-truth label", async () => {
+  const transactions = await getAccountTimeline(c001.accountId, { useSlice: true });
+  const notes = await getNotesForAccount(c001.accountId);
+  const kycRecord = await getKycRecord(c001.accountId);
+  const aggregates = await computeAggregates(c001.accountId, { useSlice: true });
+  const graph = await computeGraph(c001.accountId, { useSlice: true });
+  const patterns = await detectPatterns(c001.accountId, { useSlice: true });
+  const corpus = await loadTypologyCorpus();
+  const computations = [...aggregates, ...graph, ...patterns];
+
+  // Guard against a vacuous pass: the case must actually contain labelled rows, and the
+  // full Transaction objects handed to the builder must still carry the label.
+  expect(transactions.some((t) => t.isLaundering)).toBe(true);
+  expect(JSON.stringify(transactions)).toMatch(LABEL);
+
+  const evidence = { points: [{ text: "Activity across several counterparties.", sourceIds: [transactions[0]!.sourceId] }] };
+  const kycAssessment = { expectedActivity: "x", riskFactors: [], dataGaps: [], stalenessDays: 100 };
+  const typologyAssessment = {
+    matches: [
+      {
+        ffiecClauseId: corpus.sections[0]!.clauses[0]!.id,
+        policyVersion: POLICY_VERSION,
+        supportingSourceIds: [transactions[0]!.sourceId],
+        strength: "low" as const,
+      },
+    ],
+    counterHypotheses: ["A legitimate explanation."],
+    dataGaps: [],
+  };
+  const ids = { caseId: c001.caseId, accountId: c001.accountId };
+
+  const built: Record<string, string> = {
+    evidence: buildEvidenceUserContent({ ...ids, transactions, notes }),
+    kyc: buildKycUserContent({ ...ids, kycRecord, aggregates, patterns, stalenessDays: 100 }),
+    typology: buildTypologyUserContent({
+      ...ids,
+      evidence,
+      computations,
+      typologyCorpus: corpus.sections.map((s) => ({ section: s.section, clauses: s.clauses })),
+    }),
+    verifier: buildVerifierUserContent({ ...ids, evidence, typologyAssessment, computations }),
+    coordinator: buildCoordinatorUserContent({ ...ids, evidence, kycAssessment, typologyAssessment }),
+  };
+
+  for (const [agent, content] of Object.entries(built)) {
+    expect(content, `${agent} prompt must not contain the ground-truth label`).not.toMatch(LABEL);
+  }
+  for (const t of transactions.map(toAgentTransaction)) {
+    expect(Object.keys(t)).not.toContain("isLaundering");
+  }
 });

@@ -1,6 +1,6 @@
 import { callAgent } from "../llm/call.ts";
 import { EvidenceSummarySchema, type EvidenceSummary } from "../domain/agentOutputs.ts";
-import type { Transaction } from "../domain/transaction.ts";
+import { toAgentTransaction, type Transaction } from "../domain/transaction.ts";
 import type { Note } from "../domain/note.ts";
 import { SAFETY_PREAMBLE, renderUntrusted } from "./base.ts";
 
@@ -25,7 +25,7 @@ export function buildEvidenceUserContent(input: EvidenceAgentInput): string {
   return [
     `Account under investigation: ${input.accountId}`,
     `Real transaction timeline for this account (JSON array, one entry per transaction, each carrying its own source_id):`,
-    JSON.stringify(input.transactions, null, 2),
+    JSON.stringify(input.transactions.map(toAgentTransaction), null, 2),
     renderUntrusted(
       "analyst_notes",
       input.notes.map((n) => ({ sourceId: n.sourceId, text: n.text })),

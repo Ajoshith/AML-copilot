@@ -51,7 +51,7 @@ Cases never run count under `NOT_RUN`.
   "rationale": "…", "isLaundering": true, "shape": { "txnCount": 28, "inDegree": 13, "…": 0 }, "state": null } ] }
 ```
 
-`isLaundering` is the IBM ground-truth label, shown for evaluation. Note: the per-transaction label currently reaches the Evidence agent too — see [known limitations](../explanation/system-card.md#known-limitations).
+`isLaundering` is the IBM ground-truth label, shown for evaluation. Agents never receive the per-transaction label (enforced by a test), but the human analyst sees it in the source panel.
 
 ### `GET /cases/:id`
 

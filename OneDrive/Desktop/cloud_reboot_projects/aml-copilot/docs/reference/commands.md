@@ -16,7 +16,7 @@ Run from the project root. `bun run <name>` runs a `package.json` script.
 
 | Command | Does |
 |---|---|
-| `bun test` | All 88 tests across 13 files, offline |
+| `bun test` | All 92 tests across 13 files, offline |
 | `bun test tests/<file>.test.ts` | One file |
 
 | Test file | Proves |

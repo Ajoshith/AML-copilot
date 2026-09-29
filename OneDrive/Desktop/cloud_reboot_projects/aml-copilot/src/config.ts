@@ -15,8 +15,16 @@ export const POLICY_VERSION = "2026.09.0";
  *   blueprint asks of it; per §9 incomplete data becomes a research task and a
  *   blocking gap on the recommendation, not a withheld packet. The verifier is
  *   also now given the deterministic computations it is asked to verify against.
+ * 1.2.0 — Agents no longer see the IBM `isLaundering` ground-truth label, directly or
+ *   by proxy. (1) The Evidence agent's transactions now pass through an explicit field
+ *   allowlist. (2) KYC `riskRating` is now derived from static onboarding attributes
+ *   (src/data/riskRating.ts) instead of from the label. 1.1.0 recordings could read the
+ *   answer key, and quoted it in case memos ("flagged isLaundering true", "already
+ *   high-risk KYC profile"), which contaminated any evaluation against that label. The
+ *   system prompts are unchanged; the user content is not, so every cassette recorded
+ *   at 1.1.0 or earlier is invalid and must be re-recorded.
  */
-export const PROMPT_VERSION = "1.1.0";
+export const PROMPT_VERSION = "1.2.0";
 
 export type LlmProvider = "anthropic" | "groq";
 

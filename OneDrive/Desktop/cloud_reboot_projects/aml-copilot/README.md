@@ -229,8 +229,8 @@ Runs the pipeline over all 8 mined cases and reports a confusion matrix against 
 cost/latency per case. This is a small honest baseline (8 mined cases, not a large
 statistical sample) meant to prove the metrics pipeline is wired to real ground truth, not a
 claim about model quality at scale. Current results and known limitations are in the
-[AI system card](docs/explanation/system-card.md#evaluation). They include a ground-truth label
-that currently leaks into the Evidence agent's input.
+[AI system card](docs/explanation/system-card.md#evaluation). They include two ground-truth
+leaks, direct and via the KYC risk rating, that are fixed in code but not yet re-recorded.
 
 ## Tests
 
@@ -238,7 +238,7 @@ that currently leaks into the Evidence agent's input.
 AML_LLM_MODE=replay bun test
 ```
 
-88 tests across 13 files, no API key required: each test seeds the cassettes it needs and
+92 tests across 13 files, no API key required: each test seeds the cassettes it needs and
 runs against the committed real-data slice. What each file proves is listed in the
 [commands reference](docs/reference/commands.md#tests).
 

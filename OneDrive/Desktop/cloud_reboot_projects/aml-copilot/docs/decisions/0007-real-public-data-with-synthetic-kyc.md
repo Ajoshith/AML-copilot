@@ -23,7 +23,9 @@ public equivalent exists.
 ## Consequences
 
 - Every citation is either a real record or visibly synthetic.
-- Results can be compared with real ground truth. The label must then be kept away from the agents, and it
-  currently is not (see the [system card](../explanation/system-card.md#known-limitations)).
+- Results can be compared with real ground truth. The label must then be kept away from the agents, both
+  directly (the per-transaction label is allowlisted out) and by proxy (the KYC `riskRating` is scored from
+  onboarding attributes, never from the label). Both are test-enforced. See the
+  [system card](../explanation/system-card.md#known-limitations).
 - Synthetic profiles are cruder than real ones and can make mismatches easier to spot.
 - Re-mining or refreshing data needs the full download ([how](../how-to/refresh-source-data.md)).

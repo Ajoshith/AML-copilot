@@ -6,7 +6,7 @@
     "occupation": "Retail shop manager",
     "businessType": "Individual",
     "statedExpectedMonthlyVolume": 528369155.4,
-    "riskRating": "high",
+    "riskRating": "medium",
     "lastReviewDate": "2024-03-15",
     "jurisdiction": "US"
   },
@@ -39,7 +39,7 @@
     "occupation": "Independent contractor",
     "businessType": "Individual",
     "statedExpectedMonthlyVolume": 27800801.16,
-    "riskRating": "high",
+    "riskRating": "low",
     "lastReviewDate": "2024-03-15",
     "jurisdiction": "US"
   },
@@ -61,7 +61,7 @@
     "occupation": "Freelance graphic designer",
     "businessType": "Sole proprietorship",
     "statedExpectedMonthlyVolume": 21969447.79,
-    "riskRating": "medium",
+    "riskRating": "low",
     "lastReviewDate": "2024-03-15",
     "jurisdiction": "US"
   },

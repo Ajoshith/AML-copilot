@@ -17,6 +17,7 @@ import { NoteSchema, type Note } from "../src/domain/note.ts";
 import { INJECTION_PAYLOADS } from "../src/data/injectionCorpus.ts";
 import { screenSanctions } from "../src/analytics/sanctionsMatch.ts";
 import { DATA_OVERLAY_DIR, DATA_SLICE_DIR } from "../src/config.ts";
+import { riskRatingFor } from "../src/data/riskRating.ts";
 import type { MinedCase } from "./select-cases.ts";
 import { MinedCaseSchema } from "./select-cases.ts";
 
@@ -104,14 +105,16 @@ async function accountFinancials(accountId: string): Promise<{ totalReceived: nu
 
 function buildKyc(c: MinedCase, accountHolderName: string, expectedMonthlyVolume: number | null): CustomerRecord {
   const isStale = c.caseId === "C-004";
+  const occupation = isStale ? null : deterministicPick(OCCUPATIONS, c.accountId);
+  const businessType = isStale ? null : deterministicPick(["Sole proprietorship", "LLC", "Individual"], c.accountId + "b");
   return CustomerRecordSchema.parse({
     sourceId: `kyc:overlay:${c.accountId}:v1`,
     accountId: c.accountId,
     accountHolderName,
-    occupation: isStale ? null : deterministicPick(OCCUPATIONS, c.accountId),
-    businessType: isStale ? null : deterministicPick(["Sole proprietorship", "LLC", "Individual"], c.accountId + "b"),
+    occupation,
+    businessType,
     statedExpectedMonthlyVolume: isStale ? null : expectedMonthlyVolume,
-    riskRating: c.isLaundering || c.classification === "sanctions-name-match" ? "high" : c.classification === "near-miss" ? "medium" : "low",
+    riskRating: riskRatingFor({ occupation, businessType }),
     lastReviewDate: isStale ? null : "2024-03-15",
     jurisdiction: "US",
   });

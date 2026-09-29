@@ -6,6 +6,7 @@ import {
   TypologyAssessmentSchema,
   CasePacketSchema,
 } from "../src/domain/index.ts";
+import { riskRatingFor } from "../src/data/riskRating.ts";
 
 describe("SourceIdSchema", () => {
   test("accepts a real transaction source id", () => {
@@ -64,5 +65,40 @@ describe("CasePacketSchema", () => {
       blockingGaps: [],
     });
     expect(result.success).toBe(false);
+  });
+});
+
+describe("KYC risk rating is independent of the ground-truth label", () => {
+  const load = async <T>(name: string) => JSON.parse(await Bun.file(`data/overlay/${name}.json`).text()) as T;
+
+  test("every committed KYC record carries the rating its own attributes produce", async () => {
+    const kyc = await load<Array<{ accountId: string; occupation: string | null; businessType: string | null; riskRating: string }>>("kyc");
+    expect(kyc.length).toBeGreaterThan(0);
+    for (const r of kyc) {
+      expect(r.riskRating, `account ${r.accountId}`).toBe(riskRatingFor(r));
+    }
+  });
+
+  test("the rating cannot be used to read off the label", async () => {
+    const kyc = await load<Array<{ accountId: string; riskRating: string }>>("kyc");
+    const cases = await load<Array<{ accountId: string; isLaundering: boolean }>>("cases");
+    const labelled = new Set(cases.filter((c) => c.isLaundering).map((c) => c.accountId));
+    const laundering = kyc.filter((r) => labelled.has(r.accountId));
+    const clean = kyc.filter((r) => !labelled.has(r.accountId));
+    expect(laundering.length).toBeGreaterThan(0);
+    expect(clean.length).toBeGreaterThan(0);
+    // The old rule rated every labelled-laundering account "high". Neither direction may hold now.
+    expect(laundering.some((r) => r.riskRating !== "high")).toBe(true);
+    expect(clean.some((r) => r.riskRating === "high")).toBe(true);
+  });
+
+  test("scores static onboarding attributes only, and an unratable profile defaults to high", () => {
+    expect(riskRatingFor({ occupation: null, businessType: null })).toBe("high");
+    expect(riskRatingFor({ occupation: "Restaurant owner", businessType: null })).toBe("high");
+    expect(riskRatingFor({ occupation: "Freelance graphic designer", businessType: "Individual" })).toBe("low");
+    expect(riskRatingFor({ occupation: "Retail shop manager", businessType: "Individual" })).toBe("medium");
+    expect(riskRatingFor({ occupation: "Restaurant owner", businessType: "Sole proprietorship" })).toBe("high");
+    // Its parameter type has no label or classification field to depend on.
+    expect(riskRatingFor.length).toBe(1);
   });
 });

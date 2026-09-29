@@ -13,7 +13,7 @@ understand how it works, its limitations and its key assumptions.
 | Status | Research prototype. **Not for production use** |
 | Model | `claude-sonnet-5` (Anthropic) through LangChain; `openai/gpt-oss-120b` on Groq is supported |
 | Reasoning | Adaptive thinking at `high` effort for all five agents |
-| Prompt version | `1.1.0` |
+| Prompt version | `1.2.0` in the code. The recordings behind the results below were made at `1.1.0`, before the ground-truth fix, and need re-recording |
 | Policy version | `2026.09.0` (FFIEC Appendix F corpus) |
 | Blueprint | *Enterprise Agentic AI Blueprint: AML Investigation*, §12 build exercise |
 
@@ -69,7 +69,9 @@ Licences are in [DATA_LICENSES.md](../../DATA_LICENSES.md).
 
 ## Evaluation
 
-Replayed over the eight mined cases with real recorded model output (September 2026, prompt version 1.1.0):
+Replayed over the eight mined cases with real recorded model output (September 2026, prompt version 1.1.0).
+**These results are stale.** They were recorded before the ground-truth fix in 1.2.0 (see limitation 1), so
+the agents could read the answer key for labelled cases. Treat them as an upper bound until the cases are re-recorded:
 
 | Case | Scenario | Ground truth | Outcome | Recommendation | Confidence |
 |---|---|---|---|---|---|
@@ -97,10 +99,19 @@ and 0.62 and do not separate laundering from clean cases.
 
 ## Known limitations
 
-1. **Ground-truth leakage.** The Evidence agent receives each transaction's IBM `isLaundering` label as
-   part of the transaction record, and recorded output cites it (C-001's memo mentions legs "flagged
-   isLaundering true"). The evaluation above is therefore optimistic for labelled cases. Fix: strip the
-   label from agent inputs, bump `PROMPT_VERSION` and re-record.
+1. **Ground-truth leakage.** *Both leaks fixed in code (`PROMPT_VERSION` 1.2.0); recordings pending.*
+   Up to 1.1.0 the Evidence agent received each transaction's IBM `isLaundering` label, and recorded output
+   cited it (C-001's memo mentions legs "flagged isLaundering true"). Agents now see transactions only
+   through an explicit field allowlist (`toAgentTransaction` in `src/domain/transaction.ts`), and
+   `tests/agentsWiring.test.ts` fails if any of the five agents' prompts contains the label. The
+   evaluation above predates the fix and is optimistic for labelled cases until re-recorded.
+   A second, indirect leak is also closed. The KYC `riskRating` used to be generated from the same label
+   (every labelled-laundering account was `high`), the KYC agent read it, and recorded memos leaned on it
+   ("already high-risk KYC profile"). It is now scored from static onboarding attributes only
+   (`src/data/riskRating.ts`): cash-intensive, trade-based and real-estate occupations and legal entities
+   score higher, and an unratable profile defaults to `high`. Among the four labelled cases the ratings are
+   now medium, high, high and low; `tests/domain.test.ts` fails if the rating ever again identifies the label.
+   The remaining correlation is C-004, rated `high` because its profile is empty, which is by design.
 2. **Tendency to over-escalate.** Two of three clean accounts were recommended for SAR consideration,
    although the model did supply counter-hypotheses for each. Left unchecked, this pushes analysts toward
    over-filing; the override-reason requirement exists to surface that pattern.

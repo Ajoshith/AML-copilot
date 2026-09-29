@@ -30,11 +30,13 @@ stale output.
 
 | Constant | Current | Bump when |
 |---|---|---|
-| `PROMPT_VERSION` | `1.1.0` | Any agent's system prompt changes |
+| `PROMPT_VERSION` | `1.2.0` | Any agent's system prompt, or what data an agent is shown, changes |
 | `POLICY_VERSION` | `2026.09.0` | `src/policy/typologies.yaml` (the FFIEC corpus) changes |
 | `AGENT_EFFORT` | `high` | Not normally changed. One flat effort level for all five agents |
 
-`PROMPT_VERSION` history: `1.1.0` narrowed the verifier to material facts and gave it the deterministic
+`PROMPT_VERSION` history: `1.2.0` stopped agents seeing the IBM `isLaundering` ground-truth label, directly
+or through the KYC risk rating, and invalidated every earlier recording ([system card](../explanation/system-card.md#known-limitations)).
+`1.1.0` narrowed the verifier to material facts and gave it the deterministic
 computations. `1.0.0` blocked every case (see [ADR 0005](../decisions/0005-verifier-checks-material-facts-only.md)).
 
 ## Paths
